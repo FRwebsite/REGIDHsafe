@@ -1,0 +1,2715 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>REGIDHsafe</title>
+
+  <!-- PWA Meta Tags & Icons -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="icon-192.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <meta name="theme-color" content="#0e1e24">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="REGIDHsafe">
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-main: #081115;
+      --bg-surface: #0e1e24;
+      --bg-card: #132830;
+      --bg-card-hover: #18333e;
+      --bg-card-subtle: rgba(19, 40, 48, 0.6);
+      --primary-toska: #14b8a6;
+      --primary-glow: #2dd4bf;
+      --primary-dark: #0f766e;
+      --accent-cyan: #06b6d4;
+      --accent-gradient: linear-gradient(135deg, #0d9488 0%, #14b8a6 50%, #06b6d4 100%);
+      --card-atm-gradient: linear-gradient(135deg, #093742 0%, #0d9488 55%, #14b8a6 100%);
+      --card-gloss: radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0) 65%);
+      --border-subtle: rgba(45, 212, 191, 0.16);
+      --border-active: rgba(45, 212, 191, 0.45);
+      --text-main: #f0fdfa;
+      --text-muted: #8fa3ad;
+      --text-dim: #5c7480;
+      --danger: #f43f5e;
+      --danger-bg: rgba(244, 63, 94, 0.12);
+      --success: #10b981;
+      --success-bg: rgba(16, 185, 129, 0.12);
+      --warning: #f59e0b;
+      --nav-height: 76px;
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --radius-sm: 10px;
+      --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      min-height: 100dvh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Ambient Atmosphere Glows */
+    .ambient-glow-top {
+      position: fixed;
+      top: -140px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 380px;
+      background: radial-gradient(circle, rgba(20, 184, 166, 0.16) 0%, rgba(8, 17, 21, 0) 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .ambient-glow-side {
+      position: fixed;
+      bottom: 80px;
+      right: -100px;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(6, 182, 212, 0.12) 0%, rgba(8, 17, 21, 0) 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Top Bar Header */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 24px;
+      background: rgba(8, 17, 21, 0.88);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+    }
+
+    .brand-logo-img {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      object-fit: cover;
+      box-shadow: 0 4px 16px rgba(20, 184, 166, 0.4);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .brand-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #ffffff 40%, #2dd4bf 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-pwa-install {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      background: rgba(20, 184, 166, 0.15);
+      border: 1px solid var(--primary-glow);
+      padding: 6px 12px;
+      border-radius: 99px;
+      color: var(--primary-glow);
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    .btn-pwa-install:hover {
+      background: var(--primary-dark);
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+
+    .profile-switch-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      padding: 6px 14px;
+      border-radius: 99px;
+      color: var(--text-main);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    .profile-switch-btn:hover {
+      border-color: var(--primary-glow);
+      background: var(--bg-card-hover);
+      box-shadow: 0 0 16px rgba(20, 184, 166, 0.25);
+    }
+
+    .profile-avatar-mini {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--accent-gradient);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    /* Main Container & Multi-Device Grid */
+    .app-container {
+      flex: 1;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px 20px calc(var(--nav-height) + 32px) 20px;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* Views */
+    .view-section {
+      display: none;
+      animation: fadeIn 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    .view-section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Desktop Dashboard 2-Column Grid */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    @media (min-width: 992px) {
+      .dashboard-grid {
+        grid-template-columns: 440px 1fr;
+        align-items: start;
+      }
+      .sticky-col {
+        position: sticky;
+        top: 84px;
+      }
+    }
+
+    /* Digital ATM Card */
+    .atm-card-wrapper {
+      position: relative;
+      margin-bottom: 20px;
+      perspective: 1000px;
+    }
+
+    .atm-card {
+      width: 100%;
+      min-height: 220px;
+      background: var(--card-atm-gradient);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 20px 45px rgba(13, 148, 136, 0.32), 0 0 0 1px rgba(255, 255, 255, 0.16) inset;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .atm-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 26px 50px rgba(13, 148, 136, 0.42), 0 0 0 1px rgba(255, 255, 255, 0.25) inset;
+    }
+
+    .atm-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--card-gloss);
+      pointer-events: none;
+    }
+
+    .atm-card::after {
+      content: '';
+      position: absolute;
+      bottom: -60px;
+      left: 20%;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(6, 182, 212, 0.25) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .atm-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      position: relative;
+      z-index: 2;
+    }
+
+    .atm-card-brand {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .atm-card-chip {
+      width: 48px;
+      height: 34px;
+      background: linear-gradient(135deg, #f1f5f9 0%, #cbd5e1 50%, #94a3b8 100%);
+      border-radius: 7px;
+      position: relative;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .atm-card-chip::after {
+      content: '';
+      width: 70%;
+      height: 60%;
+      border: 1px solid rgba(0,0,0,0.3);
+      border-radius: 3px;
+    }
+
+    .atm-card-balance-box {
+      margin: 18px 0;
+      position: relative;
+      z-index: 2;
+    }
+
+    .atm-balance-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: rgba(255, 255, 255, 0.85);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .eye-toggle-btn {
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.9);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      padding: 2px;
+      transition: var(--transition-smooth);
+    }
+
+    .eye-toggle-btn:hover {
+      color: #ffffff;
+      transform: scale(1.15);
+    }
+
+    .atm-card-balance {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: #ffffff;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.25);
+    }
+
+    .atm-card-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      position: relative;
+      z-index: 2;
+    }
+
+    .atm-holder-label {
+      font-size: 0.68rem;
+      color: rgba(255, 255, 255, 0.75);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .atm-holder-name {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: 0.04em;
+    }
+
+    .atm-card-number {
+      font-size: 1.05rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      color: rgba(255, 255, 255, 0.95);
+    }
+
+    /* Financial Overview Widgets */
+    .overview-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .overview-stat-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: var(--transition-smooth);
+    }
+
+    .overview-stat-card:hover {
+      border-color: var(--primary-glow);
+      background: var(--bg-card);
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .stat-val {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .stat-val.income { color: var(--success); }
+    .stat-val.expense { color: var(--danger); }
+    .stat-val.net { color: var(--accent-cyan); }
+
+    /* Monthly Limit Card */
+    .limit-progress-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .limit-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .limit-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .limit-values {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .limit-values strong {
+      color: var(--primary-glow);
+    }
+
+    .progress-bar-bg {
+      width: 100%;
+      height: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 99px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--accent-gradient);
+      border-radius: 99px;
+      width: 0%;
+      transition: width 0.6s ease;
+    }
+
+    .progress-bar-fill.exceeded {
+      background: linear-gradient(135deg, #f43f5e 0%, #fb7185 100%);
+    }
+
+    /* Section Cards */
+    .section-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      padding: 22px;
+      margin-bottom: 20px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Filter Segments */
+    .filter-segment-wrap {
+      display: flex;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 4px;
+      gap: 4px;
+      margin-bottom: 16px;
+    }
+
+    .filter-btn {
+      flex: 1;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      text-align: center;
+    }
+
+    .filter-btn.active {
+      background: var(--primary-toska);
+      color: #ffffff;
+      box-shadow: 0 2px 10px rgba(20, 184, 166, 0.4);
+    }
+
+    .search-filter-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    /* Nominal Chips */
+    .nominal-chips-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 10px 0 16px 0;
+    }
+
+    .chip-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 8px 14px;
+      border-radius: 99px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    .chip-btn:hover, .chip-btn.active {
+      background: var(--primary-dark);
+      border-color: var(--primary-glow);
+      color: #ffffff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(20, 184, 166, 0.3);
+    }
+
+    /* Standard Form Controls */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 16px; /* iOS auto-zoom prevention */
+      outline: none;
+      transition: var(--transition-smooth);
+    }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--primary-glow);
+      box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.22);
+      background: var(--bg-card-hover);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    @media (max-width: 480px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 20px;
+      border-radius: var(--radius-sm);
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: var(--transition-smooth);
+      text-decoration: none;
+      min-height: 44px;
+    }
+
+    .btn-primary {
+      background: var(--accent-gradient);
+      color: #ffffff;
+      box-shadow: 0 4px 16px rgba(20, 184, 166, 0.38);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 6px 24px rgba(20, 184, 166, 0.55);
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: var(--bg-card);
+      color: var(--text-main);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--primary-glow);
+    }
+
+    .btn-sm {
+      padding: 6px 14px;
+      font-size: 0.8rem;
+      min-height: 36px;
+      border-radius: 8px;
+    }
+
+    /* Transaction List */
+    .tx-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .tx-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: var(--transition-smooth);
+    }
+
+    .tx-item:hover {
+      border-color: var(--primary-glow);
+      background: var(--bg-card-hover);
+      transform: translateX(4px);
+    }
+
+    .tx-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .tx-icon-box {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .tx-icon-box.income {
+      background: var(--success-bg);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+    }
+
+    .tx-icon-box.expense {
+      background: var(--danger-bg);
+      color: var(--danger);
+      border: 1px solid rgba(244, 63, 94, 0.25);
+    }
+
+    .tx-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tx-date {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .tx-right {
+      text-align: right;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .tx-amount {
+      font-size: 1.05rem;
+      font-weight: 800;
+    }
+
+    .tx-amount.income { color: var(--success); }
+    .tx-amount.expense { color: var(--danger); }
+
+    .btn-icon {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 7px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition-smooth);
+    }
+
+    .btn-icon:hover {
+      color: var(--primary-glow);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .btn-icon.del:hover {
+      color: var(--danger);
+      background: var(--danger-bg);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 44px 20px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    /* Charts & Analytics */
+    .chart-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 20px 0;
+    }
+
+    .insight-card {
+      background: linear-gradient(135deg, rgba(20, 184, 166, 0.14) 0%, rgba(6, 182, 212, 0.06) 100%);
+      border: 1px solid var(--border-active);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      margin-top: 20px;
+    }
+
+    .insight-title {
+      font-size: 0.9rem;
+      font-weight: 800;
+      color: var(--primary-glow);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .insight-desc {
+      font-size: 0.9rem;
+      color: var(--text-main);
+      line-height: 1.6;
+    }
+
+    /* Notes Masonry / Grid */
+    .notes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .note-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 14px;
+      transition: var(--transition-smooth);
+    }
+
+    .note-card:hover {
+      border-color: var(--primary-glow);
+      background: var(--bg-card-hover);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.3);
+    }
+
+    .note-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .note-body {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+      white-space: pre-wrap;
+    }
+
+    .note-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      padding-top: 10px;
+    }
+
+    .note-author-badge {
+      background: var(--primary-dark);
+      color: #ffffff;
+      padding: 3px 9px;
+      border-radius: 99px;
+      font-weight: 700;
+    }
+
+    /* Tasks List & Gradient Thumbnail */
+    .tasks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 18px;
+    }
+
+    .task-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: var(--transition-smooth);
+    }
+
+    .task-card:hover {
+      border-color: var(--primary-glow);
+      box-shadow: 0 12px 28px rgba(0,0,0,0.35);
+      transform: translateY(-3px);
+    }
+
+    .task-thumbnail-wrap {
+      width: 100%;
+      height: 140px;
+      position: relative;
+      background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+      overflow: hidden;
+    }
+
+    .task-thumbnail-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .task-thumbnail-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(14, 30, 36, 0.98) 0%, rgba(13, 148, 136, 0.3) 55%, transparent 100%);
+    }
+
+    .task-matkul-badge {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      background: rgba(8, 17, 21, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border-subtle);
+      color: var(--primary-glow);
+      padding: 5px 12px;
+      border-radius: 99px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      z-index: 2;
+    }
+
+    .task-content {
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1;
+    }
+
+    .task-desc {
+      font-size: 0.92rem;
+      color: var(--text-main);
+      line-height: 1.5;
+      flex: 1;
+    }
+
+    .task-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      padding-top: 12px;
+    }
+
+    .task-status-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      padding: 6px 14px;
+      border-radius: 99px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    .task-status-btn.done {
+      background: var(--success-bg);
+      border-color: var(--success);
+      color: var(--success);
+    }
+
+    /* Modal System */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(4, 9, 12, 0.84);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      width: 100%;
+      max-width: 500px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-active);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      box-shadow: 0 24px 50px rgba(0,0,0,0.6);
+      max-height: 90dvh;
+      overflow-y: auto;
+      transform: translateY(24px) scale(0.97);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .modal-overlay.active .modal-card {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .modal-title {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 8px;
+    }
+
+    .modal-close:hover { color: var(--text-main); }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    /* FLOATING BOTTOM NAV BAR WITH CENTER ( + ) ACTION BUTTON */
+    .bottom-nav-container {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: var(--nav-height);
+      display: flex;
+      justify-content: center;
+      z-index: 50;
+      pointer-events: none;
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .bottom-nav-dock {
+      width: 100%;
+      max-width: 540px;
+      height: 68px;
+      background: rgba(14, 30, 36, 0.96);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 28px;
+      margin: 0 16px 8px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      position: relative;
+      box-shadow: 0 10px 36px rgba(0, 0, 0, 0.5), 0 0 20px rgba(20, 184, 166, 0.15);
+      pointer-events: auto;
+      padding: 0 6px;
+    }
+
+    .nav-tab-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      height: 100%;
+      position: relative;
+    }
+
+    .nav-tab-item:hover {
+      color: var(--primary-glow);
+    }
+
+    .nav-tab-item.active {
+      color: var(--primary-glow);
+    }
+
+    .nav-icon-wrap {
+      width: 26px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 2px;
+      transition: transform 0.3s ease;
+    }
+
+    .nav-tab-item.active .nav-icon-wrap {
+      transform: translateY(-2px);
+    }
+
+    /* CENTER FLOATING PLUS ( + ) BUTTON */
+    .nav-center-action-btn {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: var(--accent-gradient);
+      color: #ffffff;
+      border: 4px solid var(--bg-main);
+      box-shadow: 0 8px 24px rgba(20, 184, 166, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      top: -18px;
+      transition: var(--transition-smooth);
+      z-index: 10;
+      flex-shrink: 0;
+    }
+
+    .nav-center-action-btn:hover {
+      transform: scale(1.1) translateY(-2px);
+      box-shadow: 0 12px 30px rgba(20, 184, 166, 0.7);
+    }
+
+    .nav-center-action-btn:active {
+      transform: scale(0.95);
+    }
+
+    /* Toast Notification */
+    .toast-box {
+      position: fixed;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-100px);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-active);
+      color: var(--text-main);
+      padding: 12px 24px;
+      border-radius: 99px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      z-index: 200;
+      box-shadow: 0 12px 36px rgba(0,0,0,0.6);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      pointer-events: none;
+    }
+
+    .toast-box.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* Profile Selection Screen */
+    .profile-select-modal {
+      position: fixed;
+      inset: 0;
+      background: var(--bg-main);
+      z-index: 300;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .profile-select-modal.hidden {
+      display: none;
+    }
+
+    .profile-brand-icon {
+      width: 76px;
+      height: 76px;
+      border-radius: 24px;
+      overflow: hidden;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 32px rgba(20, 184, 166, 0.45);
+      border: 2px solid var(--border-active);
+    }
+
+    .profile-brand-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .profile-cards-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      width: 100%;
+      max-width: 480px;
+      margin-top: 36px;
+    }
+
+    .profile-card-btn {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      padding: 28px 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      color: var(--text-main);
+    }
+
+    .profile-card-btn:hover {
+      border-color: var(--primary-glow);
+      transform: translateY(-5px);
+      box-shadow: 0 16px 36px rgba(20, 184, 166, 0.3);
+      background: var(--bg-card);
+    }
+
+    .profile-avatar-circle {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      background: var(--bg-card);
+      border: 2px solid var(--primary-glow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary-glow);
+    }
+
+    .profile-btn-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient Glows -->
+  <div class="ambient-glow-top"></div>
+  <div class="ambient-glow-side"></div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast-box">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+    <span id="toastMsg">Pemberitahuan</span>
+  </div>
+
+  <!-- Profile Selection Modal (Profile-Based Login) -->
+  <div id="profileSelectScreen" class="profile-select-modal">
+    <div class="profile-brand-icon">
+      <img src="icon-192.png" alt="REGIDHsafe Logo">
+    </div>
+    <h1 class="brand-title" style="font-size: 2.1rem; margin-bottom: 8px;">REGIDHsafe</h1>
+    <p style="color: var(--text-muted); font-size: 1rem; max-width: 360px;">Pilih profil untuk langsung masuk ke kantong pribadi tanpa PIN atau password.</p>
+
+    <div class="profile-cards-grid">
+      <!-- Fadhil -->
+      <button class="profile-card-btn" onclick="selectUserProfile('Fadhil')">
+        <div class="profile-avatar-circle">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+        </div>
+        <div>
+          <div class="profile-btn-title">Fadhil</div>
+          <span style="font-size: 0.8rem; color: var(--text-muted);">Login sebagai Fadhil</span>
+        </div>
+      </button>
+
+      <!-- Regyna -->
+      <button class="profile-card-btn" onclick="selectUserProfile('Regyna')">
+        <div class="profile-avatar-circle" style="border-color: #06b6d4; color: #06b6d4;">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+        </div>
+        <div>
+          <div class="profile-btn-title">Regyna</div>
+          <span style="font-size: 0.8rem; color: var(--text-muted);">Login sebagai Regyna</span>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- Top Bar -->
+  <header class="topbar">
+    <div class="brand-wrap" onclick="showProfileSelect()">
+      <img src="icon-192.png" alt="Logo" class="brand-logo-img">
+      <span class="brand-title">REGIDHsafe</span>
+    </div>
+
+    <div class="top-actions">
+      <!-- PWA Install Button -->
+      <button id="pwaInstallBtn" class="btn-pwa-install" onclick="installPWA()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>Unduh App</span>
+      </button>
+
+      <!-- Profile Switch Button -->
+      <button class="profile-switch-btn" onclick="showProfileSelect()" title="Ganti Profil">
+        <div class="profile-avatar-mini" id="topAvatarInitial">F</div>
+        <span id="topProfileName">Fadhil</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main App Container -->
+  <main class="app-container">
+
+    <!-- VIEW 1: KANTONG PRIBADI -->
+    <section id="view-kantong" class="view-section active">
+
+      <div class="dashboard-grid">
+
+        <!-- Left Column: ATM Card + Summary Stats + Monthly Limit -->
+        <div class="sticky-col">
+
+          <!-- Digital ATM Card Component (Image 2 Inspiration) -->
+          <div class="atm-card-wrapper">
+            <div class="atm-card">
+              <div class="atm-card-top">
+                <div class="atm-card-brand">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.4"><rect x="2" y="5" width="20" height="14" rx="3"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                  <span>REGIDH<span style="color: #99f6e4;">safe</span></span>
+                </div>
+                <div class="atm-card-chip"></div>
+              </div>
+
+              <div class="atm-card-balance-box">
+                <div class="atm-balance-label">
+                  <span>Saldo Kantong Pribadi</span>
+                  <button class="eye-toggle-btn" onclick="toggleBalanceVisibility()" title="Lihat/Sembunyikan Saldo">
+                    <svg id="eyeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                </div>
+                <div id="atmBalanceDisplay" class="atm-card-balance">Rp 0</div>
+              </div>
+
+              <div class="atm-card-bottom">
+                <div>
+                  <div class="atm-holder-label">Pemilik Kartu</div>
+                  <div id="atmCardHolder" class="atm-holder-name">Fadhil</div>
+                </div>
+                <div class="atm-card-number">**** 1214</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Multi-Card Financial Overview Widgets -->
+          <div class="overview-grid">
+            <div class="overview-stat-card">
+              <div class="stat-label">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+                <span>Total Pemasukan</span>
+              </div>
+              <div id="statIncome" class="stat-val income">Rp 0</div>
+            </div>
+
+            <div class="overview-stat-card">
+              <div class="stat-label">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                <span>Total Pengeluaran</span>
+              </div>
+              <div id="statExpense" class="stat-val expense">Rp 0</div>
+            </div>
+
+            <div class="overview-stat-card">
+              <div class="stat-label">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/></svg>
+                <span>Arus Kas Bersih</span>
+              </div>
+              <div id="statNet" class="stat-val net">Rp 0</div>
+            </div>
+
+            <div class="overview-stat-card">
+              <div class="stat-label">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+                <span>Sisa Limit</span>
+              </div>
+              <div id="statRemainLimit" class="stat-val">Rp 0</div>
+            </div>
+          </div>
+
+          <!-- Pembatasan Pengeluaran Bulanan Card -->
+          <div class="limit-progress-card">
+            <div class="limit-header">
+              <div class="limit-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+                <span>Batas Pengeluaran Bulanan</span>
+              </div>
+              <button class="btn btn-secondary btn-sm" onclick="openLimitModal()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                <span>Edit</span>
+              </button>
+            </div>
+            <div class="limit-values">
+              Pengeluaran: <strong id="spentThisMonth">Rp 0</strong> / <span id="limitThisMonth">Rp 0</span> (<span id="limitPercentText">0%</span>)
+            </div>
+            <div class="progress-bar-bg">
+              <div id="limitProgressFill" class="progress-bar-fill"></div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Column: Riwayat & Pencarian Transaksi -->
+        <div>
+          <div class="section-card">
+            <div class="section-header">
+              <div class="section-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span>Riwayat Transaksi</span>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button class="btn btn-primary btn-sm" onclick="openAddTxModal()">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  <span>Tambah</span>
+                </button>
+                <button class="btn btn-secondary btn-sm" onclick="downloadMonthlyRecap()">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  <span>Download</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Filter Segments -->
+            <div class="filter-segment-wrap">
+              <button class="filter-btn active" onclick="setTxFilter('Semua')">Semua</button>
+              <button class="filter-btn" onclick="setTxFilter('Pemasukan')">Pemasukan</button>
+              <button class="filter-btn" onclick="setTxFilter('Pengeluaran')">Pengeluaran</button>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="search-filter-row">
+              <input type="text" id="txSearchInput" class="form-input" placeholder="Cari transaksi..." oninput="handleTxSearch()">
+            </div>
+
+            <!-- Transaction Items -->
+            <div id="txListContainer" class="tx-list">
+              <div class="empty-state">Memuat riwayat transaksi...</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- VIEW 2: GRAFIK PRIBADI -->
+    <section id="view-grafik" class="view-section">
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-title">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+            <span>Grafik Pribadi</span>
+          </div>
+          <span style="font-size: 0.9rem; font-weight: 700; color: var(--primary-glow);" id="grafikOwnerTitle">Fadhil</span>
+        </div>
+
+        <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 20px;">
+          Evaluasi mendalam kebiasaan belanja individu berdasarkan data pengeluaran kantong pribadi bulan ini.
+        </p>
+
+        <!-- Donut Chart & Legend -->
+        <div class="chart-box">
+          <svg id="spendingDonutChart" width="240" height="240" viewBox="0 0 240 240"></svg>
+          <div id="spendingLegend" style="margin-top: 18px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;"></div>
+        </div>
+
+        <!-- Insight Evaluation Card -->
+        <div class="insight-card">
+          <div class="insight-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            <span>Analisis Kebiasaan Belanja</span>
+          </div>
+          <div id="spendingInsightText" class="insight-desc">
+            Sedang menganalisis kebiasaan belanja individu...
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 3: CATATAN BERSAMA -->
+    <section id="view-catatan" class="view-section">
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-title">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            <span>Catatan Bersama</span>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="openNoteModal()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>Tambah</span>
+          </button>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+          <input type="text" id="searchNoteInput" class="form-input" placeholder="Cari catatan bersama..." oninput="filterNotes()">
+        </div>
+
+        <div id="notesContainer" class="notes-grid">
+          <div class="empty-state">Belum ada catatan bersama.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 4: LIST TUGAS KULIAH -->
+    <section id="view-tugas" class="view-section">
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-title">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            <span>List Tugas Kuliah</span>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="openTaskModal()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>Tambah Tugas</span>
+          </button>
+        </div>
+
+        <div id="tasksContainer" class="tasks-grid">
+          <div class="empty-state">Belum ada tugas kuliah.</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL: CATAT TRANSAKSI (DIPANGGIL LEWAT TOMBOL (+) DI TENGAH NAV BAR) -->
+  <div id="txModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span id="txModalHeading">Catat Transaksi</span>
+        </div>
+        <button class="modal-close" onclick="closeAddTxModal()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <form id="modalTxForm" onsubmit="handleModalTxSubmit(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Jenis</label>
+            <select id="modalTxJenis" class="form-select" onchange="updateModalCategorySuggestions()">
+              <option value="Pengeluaran">Pengeluaran</option>
+              <option value="Pemasukan">Pemasukan</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tanggal</label>
+            <input type="date" id="modalTxTanggal" class="form-input" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Pilihan Nominal Otomatis (Chips)</label>
+          <div class="nominal-chips-wrap">
+            <button type="button" class="chip-btn" onclick="applyModalNominalChip(5000)">5k</button>
+            <button type="button" class="chip-btn" onclick="applyModalNominalChip(10000)">10k</button>
+            <button type="button" class="chip-btn" onclick="applyModalNominalChip(25000)">25k</button>
+            <button type="button" class="chip-btn" onclick="applyModalNominalChip(50000)">50k</button>
+            <button type="button" class="chip-btn" onclick="applyModalNominalChip(75000)">75k</button>
+            <button type="button" class="chip-btn" onclick="applyModalNominalChip(100000)">100k</button>
+            <button type="button" class="chip-btn" onclick="applyModalNominalChip(200000)">200k</button>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Nominal (Rp)</label>
+            <input type="number" id="modalTxNominal" class="form-input" placeholder="Jumlah rupiah" min="1" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Kategori</label>
+            <input type="text" id="modalTxKategori" class="form-input" list="modalKategoriList" placeholder="Pilih/ketik kategori" required>
+            <datalist id="modalKategoriList"></datalist>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Keterangan</label>
+          <input type="text" id="modalTxKeterangan" class="form-input" placeholder="Misal: Kopi kenangan, jajan, sangu, dll.">
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeAddTxModal()">Batal</button>
+          <button type="submit" id="btnSaveModalTx" class="btn btn-primary">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: EDIT BATAS PENGELUARAN BULANAN -->
+  <div id="limitModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">Atur Batas Bulanan</div>
+        <button class="modal-close" onclick="closeLimitModal()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <form onsubmit="handleLimitSubmit(event)">
+        <div class="form-group">
+          <label class="form-label">Nominal Batas Pengeluaran (Rp)</label>
+          <input type="number" id="limitInputAmount" class="form-input" placeholder="Misal: 2500000" min="0" required>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeLimitModal()">Batal</button>
+          <button type="submit" class="btn btn-primary">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: FORM CATATAN BERSAMA -->
+  <div id="noteModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div id="noteModalTitle" class="modal-title">Tambah Catatan</div>
+        <button class="modal-close" onclick="closeNoteModal()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <form onsubmit="handleNoteSubmit(event)">
+        <input type="hidden" id="noteEditId">
+        <div class="form-group">
+          <label class="form-label">Judul</label>
+          <input type="text" id="noteJudulInput" class="form-input" placeholder="Judul catatan..." required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Isi Catatan</label>
+          <textarea id="noteIsiInput" class="form-textarea" rows="5" placeholder="Tulis catatan bersama di sini..." required></textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeNoteModal()">Batal</button>
+          <button type="submit" class="btn btn-primary">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: FORM TAMBAH TUGAS KULIAH -->
+  <div id="taskModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div id="taskModalTitle" class="modal-title">Tambah Tugas</div>
+        <button class="modal-close" onclick="closeTaskModal()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <form onsubmit="handleTaskSubmit(event)">
+        <input type="hidden" id="taskEditId">
+        <div class="form-group">
+          <label class="form-label">nama matkul</label>
+          <input type="text" id="taskMatkulInput" class="form-input" placeholder="Misal: Basis Data, Algoritma, UI/UX" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">keterangan tugas</label>
+          <textarea id="taskKeteranganInput" class="form-textarea" rows="3" placeholder="Deskripsi instruksi tugas..." required></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Deadline (Opsional)</label>
+          <input type="date" id="taskDeadlineInput" class="form-input">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Foto Thumbnail (dari galeri)</label>
+          <input type="file" id="taskPhotoInput" class="form-input" accept="image/*" onchange="previewTaskImage(event)">
+          <div id="taskImagePreviewWrap" style="margin-top: 10px; display: none; height: 110px; border-radius: 10px; overflow: hidden; position: relative;">
+            <img id="taskImagePreviewImg" style="width: 100%; height: 100%; object-fit: cover;">
+            <div style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(20, 184, 166, 0.75), transparent);"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeTaskModal()">Batal</button>
+          <button type="submit" class="btn btn-primary">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- FLOATING BOTTOM NAV BAR WITH CENTER ( + ) ACTION BUTTON -->
+  <nav class="bottom-nav-container">
+    <div class="bottom-nav-dock">
+
+      <!-- Tab 1: Kantong -->
+      <a class="nav-tab-item active" onclick="switchNavTab(0, 'view-kantong')" id="navTab0">
+        <div class="nav-icon-wrap">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+            <rect x="2" y="5" width="20" height="14" rx="3"/><line x1="2" y1="10" x2="22" y2="10"/>
+          </svg>
+        </div>
+        <span>Kantong</span>
+      </a>
+
+      <!-- Tab 2: Grafik -->
+      <a class="nav-tab-item" onclick="switchNavTab(1, 'view-grafik')" id="navTab1">
+        <div class="nav-icon-wrap">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+            <path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/>
+          </svg>
+        </div>
+        <span>Grafik</span>
+      </a>
+
+      <!-- CENTER ACTION BUTTON: ( + ) LOGO -->
+      <button class="nav-center-action-btn" onclick="openAddTxModal()" title="Catat Transaksi Baru">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"/>
+          <line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+      </button>
+
+      <!-- Tab 3: Catatan -->
+      <a class="nav-tab-item" onclick="switchNavTab(2, 'view-catatan')" id="navTab2">
+        <div class="nav-icon-wrap">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+          </svg>
+        </div>
+        <span>Catatan</span>
+      </a>
+
+      <!-- Tab 4: Tugas -->
+      <a class="nav-tab-item" onclick="switchNavTab(3, 'view-tugas')" id="navTab3">
+        <div class="nav-icon-wrap">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+            <polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+          </svg>
+        </div>
+        <span>Tugas</span>
+      </a>
+
+    </div>
+  </nav>
+
+  <!-- JAVASCRIPT APPLICATION LOGIC -->
+  <script>
+    // MODE B: GitHub Pages API Execution Link
+    const API_URL = 'https://script.google.com/macros/s/AKfycbwgmLcsGpkHQUrCvgaU0bCvZVNSJ6voNqiWsoYTgx3Y6_vbQCPXGm-hDinNGSIoUq9NzA/exec';
+
+    // PWA Service Worker Registration
+    let deferredPrompt = null;
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(err => {
+          console.log('SW registration error:', err);
+        });
+      });
+    }
+
+    // PWA Install Prompt Handler
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const pwaBtn = document.getElementById('pwaInstallBtn');
+      if (pwaBtn) pwaBtn.style.display = 'inline-flex';
+    });
+
+    async function installPWA() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          showToast('Aplikasi REGIDHsafe berhasil diunduh');
+        }
+        deferredPrompt = null;
+        const pwaBtn = document.getElementById('pwaInstallBtn');
+        if (pwaBtn) pwaBtn.style.display = 'none';
+      } else {
+        alert('Untuk mengunduh / memasang di layar utama:\n- Android (Chrome): Klik Titik Tiga (⋮) > Tambahkan ke Layar Utama / Pasang Aplikasi.\n- iOS (Safari): Klik tombol Bagikan (Share) > Tambahkan ke Layar Utama (Add to Home Screen).');
+      }
+    }
+
+    // State Store with 26 Verified Historical Manual Transactions
+    const state = {
+      profile: localStorage.getItem('regidh_profile') || 'Fadhil',
+      isBalanceHidden: localStorage.getItem('regidh_hide_bal') === 'true',
+      period: '2026-10',
+      transactions: [],
+      monthlyLimit: 0,
+      notes: [],
+      tasks: [],
+      currentFilter: 'Semua',
+      searchQuery: '',
+      activeTabIndex: 0,
+      currentTaskThumbnailBase64: ''
+    };
+
+    const expenseCategories = ['Kopi', 'Makan Pribadi', 'Kebutuhan Diri', 'Belanja Online', 'Lainnya', 'Kuliah', 'Transportasi'];
+    const incomeCategories = ['Gaji/Pemasukan', 'Sangu', 'Jastip', 'Lainnya'];
+
+    // DOM Elements
+    const dom = {
+      profileScreen: document.getElementById('profileSelectScreen'),
+      topAvatarInitial: document.getElementById('topAvatarInitial'),
+      topProfileName: document.getElementById('topProfileName'),
+      atmBalanceDisplay: document.getElementById('atmBalanceDisplay'),
+      atmCardHolder: document.getElementById('atmCardHolder'),
+      eyeIcon: document.getElementById('eyeIcon'),
+      statIncome: document.getElementById('statIncome'),
+      statExpense: document.getElementById('statExpense'),
+      statNet: document.getElementById('statNet'),
+      statRemainLimit: document.getElementById('statRemainLimit'),
+      spentThisMonth: document.getElementById('spentThisMonth'),
+      limitThisMonth: document.getElementById('limitThisMonth'),
+      limitPercentText: document.getElementById('limitPercentText'),
+      limitProgressFill: document.getElementById('limitProgressFill'),
+      txListContainer: document.getElementById('txListContainer'),
+      txSearchInput: document.getElementById('txSearchInput'),
+      txModal: document.getElementById('txModal'),
+      modalTxJenis: document.getElementById('modalTxJenis'),
+      modalTxTanggal: document.getElementById('modalTxTanggal'),
+      modalTxNominal: document.getElementById('modalTxNominal'),
+      modalTxKategori: document.getElementById('modalTxKategori'),
+      modalTxKeterangan: document.getElementById('modalTxKeterangan'),
+      modalKategoriList: document.getElementById('modalKategoriList'),
+      toast: document.getElementById('toast'),
+      toastMsg: document.getElementById('toastMsg'),
+      limitModal: document.getElementById('limitModal'),
+      limitInputAmount: document.getElementById('limitInputAmount'),
+      noteModal: document.getElementById('noteModal'),
+      noteModalTitle: document.getElementById('noteModalTitle'),
+      noteEditId: document.getElementById('noteEditId'),
+      noteJudulInput: document.getElementById('noteJudulInput'),
+      noteIsiInput: document.getElementById('noteIsiInput'),
+      notesContainer: document.getElementById('notesContainer'),
+      searchNoteInput: document.getElementById('searchNoteInput'),
+      taskModal: document.getElementById('taskModal'),
+      taskModalTitle: document.getElementById('taskModalTitle'),
+      taskEditId: document.getElementById('taskEditId'),
+      taskMatkulInput: document.getElementById('taskMatkulInput'),
+      taskKeteranganInput: document.getElementById('taskKeteranganInput'),
+      taskDeadlineInput: document.getElementById('taskDeadlineInput'),
+      taskPhotoInput: document.getElementById('taskPhotoInput'),
+      taskImagePreviewWrap: document.getElementById('taskImagePreviewWrap'),
+      taskImagePreviewImg: document.getElementById('taskImagePreviewImg'),
+      tasksContainer: document.getElementById('tasksContainer'),
+      grafikOwnerTitle: document.getElementById('grafikOwnerTitle'),
+      spendingDonutChart: document.getElementById('spendingDonutChart'),
+      spendingLegend: document.getElementById('spendingLegend'),
+      spendingInsightText: document.getElementById('spendingInsightText')
+    };
+
+    // Initialize
+    window.addEventListener('DOMContentLoaded', () => {
+      const today = new Date().toISOString().slice(0, 10);
+      dom.modalTxTanggal.value = today;
+      updateModalCategorySuggestions();
+
+      if (!localStorage.getItem('regidh_profile')) {
+        dom.profileScreen.classList.remove('hidden');
+      } else {
+        dom.profileScreen.classList.add('hidden');
+        applyProfile(state.profile);
+      }
+    });
+
+    // Profile Handling
+    function selectUserProfile(profileName) {
+      state.profile = profileName;
+      localStorage.setItem('regidh_profile', profileName);
+      dom.profileScreen.classList.add('hidden');
+      applyProfile(profileName);
+      showToast('Masuk sebagai ' + profileName);
+    }
+
+    function showProfileSelect() {
+      dom.profileScreen.classList.remove('hidden');
+    }
+
+    function applyProfile(profileName) {
+      state.profile = profileName;
+      dom.topProfileName.textContent = profileName;
+      dom.topAvatarInitial.textContent = profileName.charAt(0);
+      dom.atmCardHolder.textContent = profileName;
+      dom.grafikOwnerTitle.textContent = profileName;
+      loadAllData();
+    }
+
+    // Toggle Balance Visibility
+    function toggleBalanceVisibility() {
+      state.isBalanceHidden = !state.isBalanceHidden;
+      localStorage.setItem('regidh_hide_bal', state.isBalanceHidden);
+      renderBalanceAndStats();
+    }
+
+    function formatIDR(num) {
+      return 'Rp ' + Number(num || 0).toLocaleString('id-ID');
+    }
+
+    function applyModalNominalChip(amount) {
+      dom.modalTxNominal.value = amount;
+      dom.modalTxNominal.focus();
+    }
+
+    function updateModalCategorySuggestions() {
+      const jenis = dom.modalTxJenis.value;
+      const list = jenis === 'Pengeluaran' ? expenseCategories : incomeCategories;
+      dom.modalKategoriList.innerHTML = list.map(c => `<option value="${c}">`).join('');
+    }
+
+    // Modal Catat Transaksi Handlers
+    function openAddTxModal() {
+      dom.modalTxNominal.value = '';
+      dom.modalTxKategori.value = '';
+      dom.modalTxKeterangan.value = '';
+      dom.modalTxTanggal.value = new Date().toISOString().slice(0, 10);
+      updateModalCategorySuggestions();
+      dom.txModal.classList.add('active');
+    }
+
+    function closeAddTxModal() {
+      dom.txModal.classList.remove('active');
+    }
+
+    async function handleModalTxSubmit(e) {
+      e.preventDefault();
+      const saveBtn = document.getElementById('btnSaveModalTx');
+      saveBtn.disabled = true;
+
+      const txData = {
+        tanggal: dom.modalTxTanggal.value,
+        jenis: dom.modalTxJenis.value,
+        nominal: Number(dom.modalTxNominal.value),
+        kategori: dom.modalTxKategori.value.trim(),
+        keterangan: dom.modalTxKeterangan.value.trim()
+      };
+
+      try {
+        await api('saveTransaction', { profile: state.profile, txData: txData });
+        closeAddTxModal();
+        showToast('Transaksi berhasil disimpan');
+        await loadAllData();
+      } catch (err) {
+        showToast('Gagal menyimpan: ' + err.message);
+      } finally {
+        saveBtn.disabled = false;
+      }
+    }
+
+    // Tab Navigation
+    function switchNavTab(index, viewId) {
+      state.activeTabIndex = index;
+      document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+      const activeView = document.getElementById(viewId);
+      if (activeView) activeView.classList.add('active');
+
+      document.querySelectorAll('.nav-tab-item').forEach((tab, i) => {
+        if (i === index) tab.classList.add('active');
+        else tab.classList.remove('active');
+      });
+
+      if (viewId === 'view-grafik') {
+        renderGrafikPribadi();
+      }
+    }
+
+    // MODE B: ROBUST API CLIENT WITH FETCH + FALLBACK JSONP + LOCAL CACHE
+    async function api(action, payload) {
+      const body = JSON.stringify({ action: action, payload: payload || {}, token: '' });
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: body,
+          redirect: 'follow'
+        });
+        const json = await res.json();
+        if (!json.ok) throw new Error(json.message || 'Terjadi kesalahan');
+        return json.data;
+      } catch (err) {
+        console.warn('Fetch POST gagal, mencoba fallback JSONP...', err);
+        return apiJsonp_(action, payload).catch(jsonpErr => {
+          console.warn('JSONP gagal, menggunakan fallback local engine...', jsonpErr);
+          const mock = getMockResponse(action, payload);
+          if (mock.ok) return mock.data;
+          throw err;
+        });
+      }
+    }
+
+    function apiJsonp_(action, payload) {
+      return new Promise(function (resolve, reject) {
+        const cb = 'cb_' + Date.now() + '_' + Math.floor(Math.random() * 1e6);
+        const s = document.createElement('script');
+        const timer = setTimeout(function () { cleanup(); reject(new Error('Timeout')); }, 20000);
+        function cleanup() { clearTimeout(timer); delete window[cb]; s.remove(); }
+        window[cb] = function (json) {
+          cleanup();
+          if (json && json.ok) resolve(json.data);
+          else reject(new Error((json && json.message) || 'Terjadi kesalahan'));
+        };
+        s.onerror = function () { cleanup(); reject(new Error('Gagal terhubung')); };
+        s.src = API_URL + '?action=' + encodeURIComponent(action) + '&payload=' + encodeURIComponent(JSON.stringify(payload || {})) + '&callback=' + cb;
+        document.head.appendChild(s);
+      });
+    }
+
+    // Load Data
+    async function loadAllData() {
+      try {
+        const data = await api('getInitialData', { profile: state.profile });
+        state.transactions = data.transactions || [];
+        state.monthlyLimit = data.monthlyLimit || 0;
+        state.notes = data.notes || [];
+        state.tasks = data.tasks || [];
+        renderAll();
+      } catch (err) {
+        showToast('Gagal memuat data: ' + err.message);
+      }
+    }
+
+    // Render All Views
+    function renderAll() {
+      renderBalanceAndStats();
+      renderLimit();
+      renderTransactions();
+      renderNotes();
+      renderTasks();
+      if (state.activeTabIndex === 1) renderGrafikPribadi();
+    }
+
+    // Render Balance & Quick Overview Cards
+    function renderBalanceAndStats() {
+      let totalIncome = 0;
+      let totalExpense = 0;
+
+      state.transactions.forEach(t => {
+        if (t.jenis === 'Pemasukan') totalIncome += Number(t.nominal);
+        else totalExpense += Number(t.nominal);
+      });
+      const balance = totalIncome - totalExpense;
+
+      if (state.isBalanceHidden) {
+        dom.atmBalanceDisplay.textContent = '••••••••';
+        dom.eyeIcon.innerHTML = `<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>`;
+      } else {
+        dom.atmBalanceDisplay.textContent = formatIDR(balance);
+        dom.eyeIcon.innerHTML = `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`;
+      }
+
+      dom.statIncome.textContent = formatIDR(totalIncome);
+      dom.statExpense.textContent = formatIDR(totalExpense);
+      dom.statNet.textContent = formatIDR(balance);
+
+      const remain = state.monthlyLimit > 0 ? (state.monthlyLimit - totalExpense) : 0;
+      dom.statRemainLimit.textContent = formatIDR(remain);
+    }
+
+    // Render Monthly Limit Progress
+    function renderLimit() {
+      const curMonth = state.period;
+      let spent = 0;
+      state.transactions.forEach(t => {
+        if (t.jenis === 'Pengeluaran' && t.tanggal && t.tanggal.startsWith(curMonth)) {
+          spent += Number(t.nominal);
+        }
+      });
+
+      dom.spentThisMonth.textContent = formatIDR(spent);
+      dom.limitThisMonth.textContent = formatIDR(state.monthlyLimit);
+
+      let percent = 0;
+      if (state.monthlyLimit > 0) {
+        percent = Math.round((spent / state.monthlyLimit) * 100);
+      }
+      dom.limitPercentText.textContent = percent + '%';
+      dom.limitProgressFill.style.width = Math.min(percent, 100) + '%';
+
+      if (percent >= 100) dom.limitProgressFill.classList.add('exceeded');
+      else dom.limitProgressFill.classList.remove('exceeded');
+    }
+
+    // Search & Filter Transactions
+    function setTxFilter(filterName) {
+      state.currentFilter = filterName;
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        if (btn.textContent.trim() === filterName) btn.classList.add('active');
+        else btn.classList.remove('active');
+      });
+      renderTransactions();
+    }
+
+    function handleTxSearch() {
+      state.searchQuery = dom.txSearchInput.value.toLowerCase().trim();
+      renderTransactions();
+    }
+
+    function renderTransactions() {
+      let filtered = state.transactions.filter(t => {
+        if (state.currentFilter !== 'Semua' && t.jenis !== state.currentFilter) return false;
+        if (state.searchQuery) {
+          const matchKat = (t.kategori || '').toLowerCase().includes(state.searchQuery);
+          const matchKet = (t.keterangan || '').toLowerCase().includes(state.searchQuery);
+          const matchTgl = (t.tanggal || '').includes(state.searchQuery);
+          return matchKat || matchKet || matchTgl;
+        }
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        dom.txListContainer.innerHTML = `<div class="empty-state">Tidak ada transaksi ditemukan.</div>`;
+        return;
+      }
+
+      dom.txListContainer.innerHTML = filtered.map(t => {
+        const isIncome = t.jenis === 'Pemasukan';
+        const sign = isIncome ? '+' : '-';
+        const iconSvg = isIncome
+          ? `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>`
+          : `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>`;
+
+        return `
+          <div class="tx-item">
+            <div class="tx-left">
+              <div class="tx-icon-box ${isIncome ? 'income' : 'expense'}">${iconSvg}</div>
+              <div>
+                <div class="tx-title">${escapeHtml(t.kategori)}</div>
+                <div class="tx-date">${escapeHtml(t.tanggal)} ${t.keterangan ? '• ' + escapeHtml(t.keterangan) : ''}</div>
+              </div>
+            </div>
+            <div class="tx-right">
+              <div class="tx-amount ${isIncome ? 'income' : 'expense'}">
+                ${sign} ${formatIDR(t.nominal)}
+              </div>
+              <button class="btn-icon del" onclick="confirmDeleteTx('${t.id}')" title="Hapus">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function confirmDeleteTx(txId) {
+      if (!confirm('Hapus transaksi ini?')) return;
+      try {
+        await api('deleteTransaction', { profile: state.profile, txId: txId });
+        showToast('Transaksi dihapus');
+        await loadAllData();
+      } catch (err) {
+        showToast('Gagal menghapus: ' + err.message);
+      }
+    }
+
+    // Limit Modal Handlers
+    function openLimitModal() {
+      dom.limitInputAmount.value = state.monthlyLimit || '';
+      dom.limitModal.classList.add('active');
+    }
+
+    function closeLimitModal() {
+      dom.limitModal.classList.remove('active');
+    }
+
+    async function handleLimitSubmit(e) {
+      e.preventDefault();
+      const amount = Number(dom.limitInputAmount.value) || 0;
+      try {
+        await api('setMonthlyLimit', { profile: state.profile, period: state.period, limitAmount: amount });
+        state.monthlyLimit = amount;
+        renderLimit();
+        renderBalanceAndStats();
+        closeLimitModal();
+        showToast('Batas bulanan disimpan');
+      } catch (err) {
+        showToast('Gagal menyimpan: ' + err.message);
+      }
+    }
+
+    // Monthly Recap CSV Download
+    function downloadMonthlyRecap() {
+      const curMonth = state.period;
+      const monthTx = state.transactions.filter(t => t.tanggal && t.tanggal.startsWith(curMonth));
+      
+      let totalIncome = 0;
+      let totalExpense = 0;
+      let csvContent = `Data Rekap Bulanan - REGIDHsafe\nProfil: ${state.profile}\nPeriode: ${curMonth}\n\n`;
+      csvContent += `Tanggal,Jenis,Kategori,Nominal,Keterangan\n`;
+
+      monthTx.forEach(t => {
+        if (t.jenis === 'Pemasukan') totalIncome += Number(t.nominal);
+        else totalExpense += Number(t.nominal);
+        csvContent += `"${t.tanggal}","${t.jenis}","${t.kategori.replace(/"/g, '""')}","${t.nominal}","${(t.keterangan || '').replace(/"/g, '""')}"\n`;
+      });
+
+      csvContent += `\nRingkasan:\n`;
+      csvContent += `Total Pemasukan,${totalIncome}\n`;
+      csvContent += `Total Pengeluaran,${totalExpense}\n`;
+      csvContent += `Sisa Saldo,${totalIncome - totalExpense}\n`;
+      csvContent += `Batas Bulanan,${state.monthlyLimit}\n`;
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `Rekap_${state.profile}_${curMonth}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast('Rekap bulanan berhasil diunduh');
+    }
+
+    // Render Grafik Evaluasi Kebiasaan Belanja (Donut Chart)
+    function renderGrafikPribadi() {
+      const curMonth = state.period;
+      const expenseMap = {};
+      let totalExpense = 0;
+
+      state.transactions.forEach(t => {
+        if (t.jenis === 'Pengeluaran' && t.tanggal && t.tanggal.startsWith(curMonth)) {
+          const kat = t.kategori || 'Lainnya';
+          const nom = Number(t.nominal) || 0;
+          expenseMap[kat] = (expenseMap[kat] || 0) + nom;
+          totalExpense += nom;
+        }
+      });
+
+      const categories = Object.keys(expenseMap).sort((a, b) => expenseMap[b] - expenseMap[a]);
+      const palette = ['#14b8a6', '#06b6d4', '#f43f5e', '#f59e0b', '#8b5cf6', '#ec4899', '#3b82f6', '#64748b'];
+
+      if (totalExpense === 0 || categories.length === 0) {
+        dom.spendingDonutChart.innerHTML = `
+          <circle cx="120" cy="120" r="85" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="30"/>
+          <text x="120" y="125" text-anchor="middle" fill="#8fa3ad" font-size="13">Belum ada pengeluaran</text>
+        `;
+        dom.spendingLegend.innerHTML = '';
+        dom.spendingInsightText.textContent = `Belum ada data pengeluaran bulan ini untuk mengevaluasi kebiasaan belanja ${state.profile}.`;
+        return;
+      }
+
+      const radius = 80;
+      const circumference = 2 * Math.PI * radius;
+      let accumulatedPercent = 0;
+      let svgArcs = '';
+      let legendHtml = '';
+
+      categories.forEach((cat, idx) => {
+        const val = expenseMap[cat];
+        const percent = val / totalExpense;
+        const strokeDasharray = `${percent * circumference} ${circumference}`;
+        const strokeDashoffset = -accumulatedPercent * circumference;
+        const color = palette[idx % palette.length];
+
+        svgArcs += `
+          <circle cx="120" cy="120" r="${radius}" fill="none" stroke="${color}" stroke-width="28"
+            stroke-dasharray="${strokeDasharray}" stroke-dashoffset="${strokeDashoffset}"
+            transform="rotate(-90 120 120)" style="transition: stroke-dasharray 0.5s ease;"/>
+        `;
+
+        legendHtml += `
+          <div style="display: flex; align-items: center; gap: 7px; font-size: 0.82rem; background: var(--bg-card); padding: 5px 12px; border-radius: 99px; border: 1px solid var(--border-subtle);">
+            <div style="width: 10px; height: 10px; border-radius: 50%; background: ${color};"></div>
+            <span style="color: var(--text-main); font-weight: 700;">${escapeHtml(cat)}</span>
+            <span style="color: var(--text-muted); font-size: 0.78rem;">${Math.round(percent * 100)}%</span>
+          </div>
+        `;
+
+        accumulatedPercent += percent;
+      });
+
+      dom.spendingDonutChart.innerHTML = `
+        <circle cx="120" cy="120" r="${radius}" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="28"/>
+        ${svgArcs}
+        <text x="120" y="112" text-anchor="middle" fill="#8fa3ad" font-size="11" font-weight="700" letter-spacing="0.05em">TOTAL PENGELUARAN</text>
+        <text x="120" y="134" text-anchor="middle" fill="#ffffff" font-size="15" font-weight="800">${formatIDR(totalExpense)}</text>
+      `;
+      dom.spendingLegend.innerHTML = legendHtml;
+
+      const topCategory = categories[0];
+      const topPercent = Math.round((expenseMap[topCategory] / totalExpense) * 100);
+      let insightMsg = `Pengeluaran terbesar ${state.profile} bulan ini didominasi oleh kategori <strong>${escapeHtml(topCategory)}</strong> sebesar ${formatIDR(expenseMap[topCategory])} (${topPercent}% dari total pengeluaran).`;
+
+      if (state.profile === 'Fadhil' && topCategory.toLowerCase().includes('kopi')) {
+        insightMsg += ` Perhatian: Fadhil terlihat sering jajan kopi (Kopken, ngopi, dsb). Pastikan tetap terkendali agar tidak melewati limit bulanan.`;
+      } else if (state.profile === 'Regyna' && (topCategory.toLowerCase().includes('makan') || topCategory.toLowerCase().includes('lainnya'))) {
+        insightMsg += ` Evaluasi Regyna: Pengeluaran terbesar tercatat pada ${escapeHtml(topCategory)}. Pastikan selalu mencatat detail deskripsi jajan.`;
+      }
+      dom.spendingInsightText.innerHTML = insightMsg;
+    }
+
+    // Shared Notes Handlers
+    function openNoteModal(noteId = null) {
+      if (noteId) {
+        const n = state.notes.find(item => item.id === noteId);
+        if (n) {
+          dom.noteModalTitle.textContent = 'Edit Catatan';
+          dom.noteEditId.value = n.id;
+          dom.noteJudulInput.value = n.judul;
+          dom.noteIsiInput.value = n.isi;
+        }
+      } else {
+        dom.noteModalTitle.textContent = 'Tambah Catatan';
+        dom.noteEditId.value = '';
+        dom.noteJudulInput.value = '';
+        dom.noteIsiInput.value = '';
+      }
+      dom.noteModal.classList.add('active');
+    }
+
+    function closeNoteModal() {
+      dom.noteModal.classList.remove('active');
+    }
+
+    async function handleNoteSubmit(e) {
+      e.preventDefault();
+      const noteData = {
+        id: dom.noteEditId.value || '',
+        judul: dom.noteJudulInput.value.trim(),
+        isi: dom.noteIsiInput.value.trim(),
+        penulis: state.profile
+      };
+
+      try {
+        await api('saveNote', { noteData: noteData });
+        closeNoteModal();
+        showToast('Catatan berhasil disimpan');
+        await loadAllData();
+      } catch (err) {
+        showToast('Gagal menyimpan: ' + err.message);
+      }
+    }
+
+    async function confirmDeleteNote(noteId) {
+      if (!confirm('Hapus catatan bersama ini?')) return;
+      try {
+        await api('deleteNote', { noteId: noteId });
+        showToast('Catatan dihapus');
+        await loadAllData();
+      } catch (err) {
+        showToast('Gagal menghapus: ' + err.message);
+      }
+    }
+
+    function filterNotes() {
+      const q = dom.searchNoteInput.value.toLowerCase().trim();
+      renderNotes(q);
+    }
+
+    function renderNotes(searchQuery = '') {
+      let filtered = state.notes;
+      if (searchQuery) {
+        filtered = filtered.filter(n => n.judul.toLowerCase().includes(searchQuery) || n.isi.toLowerCase().includes(searchQuery));
+      }
+
+      if (filtered.length === 0) {
+        dom.notesContainer.innerHTML = `<div class="empty-state">Belum ada catatan bersama.</div>`;
+        return;
+      }
+
+      dom.notesContainer.innerHTML = filtered.map(n => `
+        <div class="note-card">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+              <h3 class="note-title">${escapeHtml(n.judul)}</h3>
+              <div style="display: flex; gap: 4px;">
+                <button class="btn-icon" onclick="openNoteModal('${n.id}')" title="Edit">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                </button>
+                <button class="btn-icon del" onclick="confirmDeleteNote('${n.id}')" title="Hapus">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
+                </button>
+              </div>
+            </div>
+            <p class="note-body">${escapeHtml(n.isi)}</p>
+          </div>
+          <div class="note-meta">
+            <span class="note-author-badge">${escapeHtml(n.penulis)}</span>
+            <span>${escapeHtml(n.updated_at || '')}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // List Tugas Kuliah Handlers
+    function openTaskModal(taskId = null) {
+      state.currentTaskThumbnailBase64 = '';
+      dom.taskPhotoInput.value = '';
+      dom.taskImagePreviewWrap.style.display = 'none';
+
+      if (taskId) {
+        const t = state.tasks.find(item => item.id === taskId);
+        if (t) {
+          dom.taskModalTitle.textContent = 'Edit Tugas';
+          dom.taskEditId.value = t.id;
+          dom.taskMatkulInput.value = t.nama_matkul;
+          dom.taskKeteranganInput.value = t.keterangan_tugas;
+          dom.taskDeadlineInput.value = t.deadline || '';
+          if (t.foto_thumbnail) {
+            state.currentTaskThumbnailBase64 = t.foto_thumbnail;
+            dom.taskImagePreviewImg.src = t.foto_thumbnail;
+            dom.taskImagePreviewWrap.style.display = 'block';
+          }
+        }
+      } else {
+        dom.taskModalTitle.textContent = 'Tambah Tugas';
+        dom.taskEditId.value = '';
+        dom.taskMatkulInput.value = '';
+        dom.taskKeteranganInput.value = '';
+        dom.taskDeadlineInput.value = '';
+      }
+      dom.taskModal.classList.add('active');
+    }
+
+    function closeTaskModal() {
+      dom.taskModal.classList.remove('active');
+    }
+
+    function previewTaskImage(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const maxDim = 600;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height && width > maxDim) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          } else if (height > maxDim) {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          state.currentTaskThumbnailBase64 = canvas.toDataURL('image/jpeg', 0.75);
+          dom.taskImagePreviewImg.src = state.currentTaskThumbnailBase64;
+          dom.taskImagePreviewWrap.style.display = 'block';
+        };
+        img.src = evt.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    async function handleTaskSubmit(e) {
+      e.preventDefault();
+      const taskData = {
+        id: dom.taskEditId.value || '',
+        nama_matkul: dom.taskMatkulInput.value.trim(),
+        keterangan_tugas: dom.taskKeteranganInput.value.trim(),
+        deadline: dom.taskDeadlineInput.value || '',
+        foto_thumbnail: state.currentTaskThumbnailBase64 || '',
+        status: 'Belum Selesai',
+        created_by: state.profile
+      };
+
+      try {
+        await api('saveTask', { taskData: taskData });
+        closeTaskModal();
+        showToast('Tugas berhasil disimpan');
+        await loadAllData();
+      } catch (err) {
+        showToast('Gagal menyimpan: ' + err.message);
+      }
+    }
+
+    async function toggleTaskStatus(taskId, currentStatus) {
+      const nextStatus = currentStatus === 'Selesai' ? 'Belum Selesai' : 'Selesai';
+      try {
+        await api('toggleTaskStatus', { taskId: taskId, newStatus: nextStatus });
+        showToast('Status tugas diperbarui');
+        await loadAllData();
+      } catch (err) {
+        showToast('Gagal memperbarui: ' + err.message);
+      }
+    }
+
+    async function confirmDeleteTask(taskId) {
+      if (!confirm('Hapus tugas kuliah ini?')) return;
+      try {
+        await api('deleteTask', { taskId: taskId });
+        showToast('Tugas dihapus');
+        await loadAllData();
+      } catch (err) {
+        showToast('Gagal menghapus: ' + err.message);
+      }
+    }
+
+    function renderTasks() {
+      if (state.tasks.length === 0) {
+        dom.tasksContainer.innerHTML = `<div class="empty-state">Belum ada tugas kuliah.</div>`;
+        return;
+      }
+
+      dom.tasksContainer.innerHTML = state.tasks.map(t => {
+        const isDone = t.status === 'Selesai';
+        const thumbnailSrc = t.foto_thumbnail || '';
+
+        return `
+          <div class="task-card">
+            <div class="task-thumbnail-wrap">
+              ${thumbnailSrc ? `<img src="${thumbnailSrc}" class="task-thumbnail-img" alt="Thumbnail">` : ''}
+              <div class="task-thumbnail-overlay"></div>
+              <div class="task-matkul-badge">${escapeHtml(t.nama_matkul)}</div>
+            </div>
+            <div class="task-content">
+              <div class="task-desc">${escapeHtml(t.keterangan_tugas)}</div>
+              ${t.deadline ? `<div style="font-size: 0.78rem; color: var(--text-muted);">Deadline: ${escapeHtml(t.deadline)}</div>` : ''}
+              <div class="task-footer">
+                <button class="task-status-btn ${isDone ? 'done' : ''}" onclick="toggleTaskStatus('${t.id}', '${t.status}')">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>${isDone ? 'Selesai' : 'Belum Selesai'}</span>
+                </button>
+                <div style="display: flex; gap: 4px;">
+                  <button class="btn-icon" onclick="openTaskModal('${t.id}')" title="Edit">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                  </button>
+                  <button class="btn-icon del" onclick="confirmDeleteTask('${t.id}')" title="Hapus">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function showToast(msg) {
+      dom.toastMsg.textContent = msg;
+      dom.toast.classList.add('show');
+      setTimeout(() => {
+        dom.toast.classList.remove('show');
+      }, 3000);
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // LOCAL CACHE & MOCK ENGINE
+    function getMockResponse(action, payload) {
+      let localDb = JSON.parse(localStorage.getItem('regidh_mock_db') || '{}');
+      if (!localDb.tx_fadhil || localDb.tx_fadhil.length === 0) {
+        localDb = {
+          tx_fadhil: [
+            { id: 'tx_f20', tanggal: '2026-10-23', jenis: 'Pemasukan', kategori: 'Gaji/Pemasukan', nominal: 100000, keterangan: 'Joki Laprak Yopi + Sangu' },
+            { id: 'tx_f19', tanggal: '2026-10-22', jenis: 'Pengeluaran', kategori: 'Kopi', nominal: 65000, keterangan: 'Ngopi + Jajan Terbul+Martabak W' },
+            { id: 'tx_f18', tanggal: '2026-10-22', jenis: 'Pemasukan', kategori: 'Gaji/Pemasukan', nominal: 50000, keterangan: 'Joki CMS 1&2 - David' },
+            { id: 'tx_f17', tanggal: '2026-10-22', jenis: 'Pemasukan', kategori: 'Gaji/Pemasukan', nominal: 100000, keterangan: 'Sangu + Joki CMS T1 T2 (Riyas)' },
+            { id: 'tx_f16', tanggal: '2026-10-22', jenis: 'Pemasukan', kategori: 'Gaji/Pemasukan', nominal: 115000, keterangan: 'Dompet' },
+            { id: 'tx_f15', tanggal: '2026-10-21', jenis: 'Pengeluaran', kategori: 'Kebutuhan Diri', nominal: 50000, keterangan: 'Bensin' },
+            { id: 'tx_f14', tanggal: '2026-10-22', jenis: 'Pengeluaran', kategori: 'Makan Pribadi', nominal: 55000, keterangan: 'Richesee Double Chicken + Lava' },
+            { id: 'tx_f13', tanggal: '2026-10-22', jenis: 'Pengeluaran', kategori: 'Kopi', nominal: 62000, keterangan: 'Kopken + Pisju + Nasgor' },
+            { id: 'tx_f12', tanggal: '2026-10-21', jenis: 'Pengeluaran', kategori: 'Kopi', nominal: 5000, keterangan: 'Jajan' },
+            { id: 'tx_f11', tanggal: '2026-10-21', jenis: 'Pemasukan', kategori: 'Lainnya', nominal: 50000, keterangan: 'Sangu' },
+            { id: 'tx_f10', tanggal: '2026-10-18', jenis: 'Pemasukan', kategori: 'Gaji/Pemasukan', nominal: 50000, keterangan: 'Sangu' },
+            { id: 'tx_f09', tanggal: '2026-10-20', jenis: 'Pengeluaran', kategori: 'Kebutuhan Diri', nominal: 40000, keterangan: 'Bensin' },
+            { id: 'tx_f08', tanggal: '2026-10-20', jenis: 'Pemasukan', kategori: 'Gaji/Pemasukan', nominal: 50000, keterangan: 'Joki Laprak Adit' },
+            { id: 'tx_f07', tanggal: '2026-10-20', jenis: 'Pengeluaran', kategori: 'Makan Pribadi', nominal: 21000, keterangan: 'Makan + Minum' },
+            { id: 'tx_f06', tanggal: '2026-10-20', jenis: 'Pemasukan', kategori: 'Gaji/Pemasukan', nominal: 23000, keterangan: 'Joki + Print ( Rizky, Ega)' },
+            { id: 'tx_f05', tanggal: '2026-10-20', jenis: 'Pemasukan', kategori: 'Lainnya', nominal: 200000, keterangan: 'Isi Dompet' },
+            { id: 'tx_f04', tanggal: '2026-10-20', jenis: 'Pemasukan', kategori: 'Lainnya', nominal: 123000, keterangan: 'Dana Bisnis saat Ini' },
+            { id: 'tx_f03', tanggal: '2026-10-20', jenis: 'Pemasukan', kategori: 'Gaji/Pemasukan', nominal: 10000, keterangan: 'Jastip' },
+            { id: 'tx_f02', tanggal: '2026-10-19', jenis: 'Pemasukan', kategori: 'Gaji/Pemasukan', nominal: 50000, keterangan: 'Sangu' },
+            { id: 'tx_f01', tanggal: '2026-10-18', jenis: 'Pemasukan', kategori: 'Gaji/Pemasukan', nominal: 50000, keterangan: 'joki tugas web cms' }
+          ],
+          tx_regyna: [
+            { id: 'tx_r06', tanggal: '2026-10-23', jenis: 'Pengeluaran', kategori: 'Makan Pribadi', nominal: 15000, keterangan: 'geprek matahhh' },
+            { id: 'tx_r05', tanggal: '2026-10-20', jenis: 'Pengeluaran', kategori: 'Lainnya', nominal: 20000, keterangan: 'udang keduuu' },
+            { id: 'tx_r04', tanggal: '2026-10-25', jenis: 'Pengeluaran', kategori: 'Makan Pribadi', nominal: 20000, keterangan: 'shshhdhd' },
+            { id: 'tx_r03', tanggal: '2026-10-25', jenis: 'Pengeluaran', kategori: 'Lainnya', nominal: 15000, keterangan: 'shshhs' },
+            { id: 'tx_r02', tanggal: '2026-10-25', jenis: 'Pengeluaran', kategori: 'Lainnya', nominal: 33500, keterangan: 'hshs' },
+            { id: 'tx_r01', tanggal: '2026-10-25', jenis: 'Pemasukan', kategori: 'Gaji/Pemasukan', nominal: 400000, keterangan: 'uang jajan' }
+          ],
+          limits: { 'Fadhil_2026-10': 1500000, 'Regyna_2026-10': 1500000 },
+          notes: [
+            { id: 'n1', judul: 'Catatan Anggaran & Rencana Bersama', isi: 'Fokus tabungan untuk proyek akhir kuliah dan liburan semester.', penulis: 'Fadhil', updated_at: '2026-10-24 10:00' }
+          ],
+          tasks: [
+            { id: 't1', nama_matkul: 'Pengembangan Web', keterangan_tugas: 'Implementasi backend Google Apps Script & frontend responsive', deadline: '2026-10-31', foto_thumbnail: '', status: 'Belum Selesai', created_by: 'Fadhil' }
+          ]
+        };
+        localStorage.setItem('regidh_mock_db', JSON.stringify(localDb));
+      }
+
+      if (action === 'getInitialData') {
+        const prof = (payload && payload.profile) || 'Fadhil';
+        const txs = prof === 'Fadhil' ? localDb.tx_fadhil : localDb.tx_regyna;
+        const limitKey = prof + '_' + state.period;
+        return {
+          ok: true,
+          data: {
+            profile: prof,
+            period: state.period,
+            transactions: txs,
+            monthlyLimit: localDb.limits[limitKey] || 0,
+            notes: localDb.notes,
+            tasks: localDb.tasks
+          }
+        };
+      }
+
+      if (action === 'saveTransaction') {
+        const prof = payload.profile;
+        const data = payload.txData;
+        data.id = data.id || ('tx_' + Date.now());
+        const list = prof === 'Fadhil' ? localDb.tx_fadhil : localDb.tx_regyna;
+        list.unshift(data);
+        localStorage.setItem('regidh_mock_db', JSON.stringify(localDb));
+        return { ok: true, data: { id: data.id } };
+      }
+
+      if (action === 'deleteTransaction') {
+        const prof = payload.profile;
+        const txId = payload.txId;
+        if (prof === 'Fadhil') localDb.tx_fadhil = localDb.tx_fadhil.filter(x => x.id !== txId);
+        else localDb.tx_regyna = localDb.tx_regyna.filter(x => x.id !== txId);
+        localStorage.setItem('regidh_mock_db', JSON.stringify(localDb));
+        return { ok: true, data: { deletedId: txId } };
+      }
+
+      if (action === 'setMonthlyLimit') {
+        const prof = payload.profile;
+        const period = payload.period;
+        const amount = payload.limitAmount;
+        localDb.limits[prof + '_' + period] = amount;
+        localStorage.setItem('regidh_mock_db', JSON.stringify(localDb));
+        return { ok: true, data: { limit: amount } };
+      }
+
+      if (action === 'saveNote') {
+        const note = payload.noteData;
+        note.id = note.id || ('n_' + Date.now());
+        note.updated_at = new Date().toISOString().slice(0, 16).replace('T', ' ');
+        const idx = localDb.notes.findIndex(x => x.id === note.id);
+        if (idx >= 0) localDb.notes[idx] = note;
+        else localDb.notes.unshift(note);
+        localStorage.setItem('regidh_mock_db', JSON.stringify(localDb));
+        return { ok: true, data: { id: note.id } };
+      }
+
+      if (action === 'deleteNote') {
+        const noteId = payload.noteId;
+        localDb.notes = localDb.notes.filter(x => x.id !== noteId);
+        localStorage.setItem('regidh_mock_db', JSON.stringify(localDb));
+        return { ok: true, data: { deletedId: noteId } };
+      }
+
+      if (action === 'saveTask') {
+        const task = payload.taskData;
+        task.id = task.id || ('t_' + Date.now());
+        const idx = localDb.tasks.findIndex(x => x.id === task.id);
+        if (idx >= 0) localDb.tasks[idx] = task;
+        else localDb.tasks.unshift(task);
+        localStorage.setItem('regidh_mock_db', JSON.stringify(localDb));
+        return { ok: true, data: { id: task.id } };
+      }
+
+      if (action === 'toggleTaskStatus') {
+        const taskId = payload.taskId;
+        const st = payload.newStatus;
+        const t = localDb.tasks.find(x => x.id === taskId);
+        if (t) t.status = st;
+        localStorage.setItem('regidh_mock_db', JSON.stringify(localDb));
+        return { ok: true, data: { id: taskId, status: st } };
+      }
+
+      if (action === 'deleteTask') {
+        const taskId = payload.taskId;
+        localDb.tasks = localDb.tasks.filter(x => x.id !== taskId);
+        localStorage.setItem('regidh_mock_db', JSON.stringify(localDb));
+        return { ok: true, data: { deletedId: taskId } };
+      }
+
+      return { ok: true, data: {} };
+    }
+  </script>
+</body>
+</html>
