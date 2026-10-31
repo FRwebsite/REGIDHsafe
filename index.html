@@ -786,13 +786,233 @@
       font-size: 0.9rem;
     }
 
-    /* Charts & Analytics */
-    .chart-box {
+    /* Futuristic Telemetry Charts & Analytics (Sesuai Referensi Gambar) */
+    .telemetry-dashboard {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .telemetry-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-active);
+      border-radius: var(--radius-xl);
+      padding: 22px;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .telemetry-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+
+    .telemetry-card-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .telemetry-card-subtitle {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+
+    /* Wave Spline Area Chart Wrapper */
+    .wave-chart-wrapper {
+      width: 100%;
+      position: relative;
+      margin: 8px 0 12px 0;
+    }
+
+    .wave-svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      overflow: visible;
+    }
+
+    .chart-grid-line {
+      stroke: rgba(255, 255, 255, 0.07);
+      stroke-width: 1;
+      stroke-dasharray: 2 4;
+    }
+
+    .chart-grid-text {
+      font-size: 10px;
+      fill: var(--text-muted);
+      font-family: inherit;
+    }
+
+    /* Chart Legend */
+    .chart-legend-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .chart-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .chart-legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    /* Radial Percentage Rings (Middle of reference image) */
+    .radial-rings-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    @media (max-width: 480px) {
+      .radial-rings-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 8px;
+      }
+    }
+
+    .radial-ring-card {
+      background: rgba(8, 17, 21, 0.85);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 14px 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      transition: var(--transition-smooth);
+    }
+
+    .radial-ring-card:hover {
+      border-color: var(--primary-glow);
+      transform: translateY(-2px);
+    }
+
+    .ring-svg-wrap {
+      width: 76px;
+      height: 76px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+
+    .ring-percent-text {
+      position: absolute;
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.5px;
+    }
+
+    .ring-cat-name {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+
+    .ring-nominal-val {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* Bottom Split Grid: Bars on Left, Multi-Arc & Pie on Right */
+    .telemetry-bottom-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    @media (min-width: 768px) {
+      .telemetry-bottom-grid {
+        grid-template-columns: 1.15fr 0.85fr;
+      }
+    }
+
+    /* Horizontal Progress Bars (Bottom Left) */
+    .h-progress-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: 10px;
+    }
+
+    .h-progress-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .h-progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.82rem;
+    }
+
+    .h-progress-cat {
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .h-progress-nominal {
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .h-progress-track {
+      width: 100%;
+      height: 12px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 99px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .h-progress-fill {
+      height: 100%;
+      border-radius: 99px;
+      transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Concentric Gauge & Sliced Donut Widget (Bottom Right) */
+    .gauge-donut-container {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      margin: 20px 0;
+      gap: 16px;
+      padding: 6px 0;
     }
 
     .insight-card {
@@ -800,11 +1020,11 @@
       border: 1px solid var(--border-active);
       border-radius: var(--radius-lg);
       padding: 18px 20px;
-      margin-top: 20px;
+      margin-top: 4px;
     }
 
     .insight-title {
-      font-size: 0.9rem;
+      font-size: 0.92rem;
       font-weight: 800;
       color: var(--primary-glow);
       margin-bottom: 8px;
@@ -1913,37 +2133,101 @@
 
     </section>
 
-    <!-- VIEW 2: GRAFIK PRIBADI -->
+    <!-- VIEW 2: GRAFIK PRIBADI (DESAIN TELEMETRI FUTURISTIK CYBER-TOSKA SESUAI GAMBAR) -->
     <section id="view-grafik" class="view-section">
-      <div class="section-card">
-        <div class="section-header">
-          <div class="section-title">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
-            <span>Grafik Pribadi</span>
+      <div class="telemetry-dashboard">
+
+        <!-- Top Header Card -->
+        <div class="telemetry-card">
+          <div class="telemetry-card-header">
+            <div>
+              <div class="telemetry-card-title">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="2.3"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+                <span>Grafik Pribadi</span>
+              </div>
+              <div class="telemetry-card-subtitle">
+                Analisis telemetri arus kas & tren pengeluaran <strong id="grafikOwnerTitle" style="color: var(--primary-glow);">Fadhil</strong>
+              </div>
+            </div>
+            <div style="font-size: 0.82rem; font-weight: 700; background: rgba(20, 184, 166, 0.15); border: 1px solid var(--border-active); color: var(--primary-glow); padding: 5px 12px; border-radius: 99px;">
+              Bulan Ini
+            </div>
           </div>
-          <span style="font-size: 0.9rem; font-weight: 700; color: var(--primary-glow);" id="grafikOwnerTitle">Fadhil</span>
+
+          <!-- Main Glowing Spline Wave Chart (Area Chart) -->
+          <div class="wave-chart-wrapper">
+            <svg id="telemetryWaveChart" class="wave-svg" viewBox="0 0 600 280">
+              <!-- Dynamically populated by renderGrafikPribadi() -->
+            </svg>
+          </div>
+
+          <!-- Chart Legend -->
+          <div class="chart-legend-row" id="telemetryChartLegend">
+            <div class="chart-legend-item">
+              <span class="chart-legend-dot" style="background: #14b8a6; box-shadow: 0 0 10px rgba(20, 184, 166, 0.7);"></span>
+              <span>Pengeluaran</span>
+            </div>
+            <div class="chart-legend-item">
+              <span class="chart-legend-dot" style="background: #06b6d4; box-shadow: 0 0 10px rgba(6, 182, 212, 0.7);"></span>
+              <span>Pemasukan</span>
+            </div>
+            <div class="chart-legend-item">
+              <span class="chart-legend-dot" style="background: #a855f7; box-shadow: 0 0 10px rgba(168, 85, 247, 0.7);"></span>
+              <span>Kategori Terbesar</span>
+            </div>
+          </div>
         </div>
 
-        <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 20px;">
-          Evaluasi mendalam kebiasaan belanja individu berdasarkan data pengeluaran kantong pribadi bulan ini.
-        </p>
-
-        <!-- Donut Chart & Legend -->
-        <div class="chart-box">
-          <svg id="spendingDonutChart" width="240" height="240" viewBox="0 0 240 240"></svg>
-          <div id="spendingLegend" style="margin-top: 18px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;"></div>
+        <!-- Middle: 3 Radial Rings (Circled Percentage Gauges) -->
+        <div class="radial-rings-grid" id="radialRingsGrid">
+          <!-- Populated by JS: Top 3 Categories with Circular Gauges -->
         </div>
 
-        <!-- Insight Evaluation Card -->
+        <!-- Bottom Grid: Left Bars, Right Donut & Concentric Arcs -->
+        <div class="telemetry-bottom-grid">
+
+          <!-- Left: Horizontal Rounded Progress Bars -->
+          <div class="telemetry-card">
+            <div class="telemetry-card-header">
+              <div class="telemetry-card-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="2.2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                <span>Proporsi per Kategori</span>
+              </div>
+            </div>
+            <div class="h-progress-list" id="hProgressBarsList">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <!-- Right: Concentric Rainbow Gauge & Sliced Donut -->
+          <div class="telemetry-card">
+            <div class="telemetry-card-header">
+              <div class="telemetry-card-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
+                <span>Distribusi Arus Kas</span>
+              </div>
+            </div>
+            <div class="gauge-donut-container">
+              <svg id="concentricArcsSvg" width="220" height="180" viewBox="0 0 220 180">
+                <!-- Concentric Arcs & Slices rendered by JS -->
+              </svg>
+              <div id="gaugeDonutLegend" style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;"></div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Insight Evaluation Card (Kebiasaan Belanja Individu) -->
         <div class="insight-card">
           <div class="insight-title">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-            <span>Analisis Kebiasaan Belanja</span>
+            <span>Evaluasi Kebiasaan Belanja Individu</span>
           </div>
           <div id="spendingInsightText" class="insight-desc">
             Sedang menganalisis kebiasaan belanja individu...
           </div>
         </div>
+
       </div>
     </section>
 
@@ -2897,82 +3181,371 @@
       showToast('Rekap bulanan berhasil diunduh');
     }
 
-    // Render Grafik Evaluasi Kebiasaan Belanja (Donut Chart)
+    // Helper spline Catmull-Rom to Cubic Bezier untuk gelombang mulus futuristik
+    function getSplinePath(points) {
+      if (!points || points.length === 0) return '';
+      if (points.length === 1) return `M ${points[0].x},${points[0].y}`;
+      let d = `M ${points[0].x},${points[0].y}`;
+      for (let i = 0; i < points.length - 1; i++) {
+        const p0 = i > 0 ? points[i - 1] : points[i];
+        const p1 = points[i];
+        const p2 = points[i + 1];
+        const p3 = i < points.length - 2 ? points[i + 2] : p2;
+        const cp1x = p1.x + (p2.x - p0.x) / 6;
+        const cp1y = p1.y + (p2.y - p0.y) / 6;
+        const cp2x = p2.x - (p3.x - p1.x) / 6;
+        const cp2y = p2.y - (p3.y - p1.y) / 6;
+        d += ` C ${cp1x.toFixed(1)},${cp1y.toFixed(1)} ${cp2x.toFixed(1)},${cp2y.toFixed(1)} ${p2.x.toFixed(1)},${p2.y.toFixed(1)}`;
+      }
+      return d;
+    }
+
+    // Render Dashboard Grafik Telemetri Futuristik (Spline Wave, 3 Radial Rings, Bars, Concentric Gauge)
     function renderGrafikPribadi() {
       const curMonth = state.period;
+      const ownerEl = document.getElementById('grafikOwnerTitle');
+      if (ownerEl) ownerEl.textContent = state.profile;
+
+      // 1. Agregasi Transaksi
       const expenseMap = {};
       let totalExpense = 0;
+      let totalIncome = 0;
+
+      // Data 7 hari (Senin s/d Minggu) untuk Wave Chart
+      // Day index: 0=Sen, 1=Sel, 2=Rab, 3=Kam, 4=Jum, 5=Sab, 6=Min
+      const dayLabels = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
+      const dailyExpense = [0, 0, 0, 0, 0, 0, 0];
+      const dailyIncome = [0, 0, 0, 0, 0, 0, 0];
+      const dailyTopCat = [0, 0, 0, 0, 0, 0, 0];
 
       state.transactions.forEach(t => {
-        if (t.jenis === 'Pengeluaran' && t.tanggal && t.tanggal.startsWith(curMonth)) {
+        if (!t.tanggal || !t.tanggal.startsWith(curMonth)) return;
+        const nom = Number(t.nominal) || 0;
+        const dObj = new Date(t.tanggal);
+        let dayIdx = dObj.getDay() - 1; // 0=Senin, 6=Minggu
+        if (dayIdx < 0) dayIdx = 6;
+
+        if (t.jenis === 'Pengeluaran') {
           const kat = t.kategori || 'Lainnya';
-          const nom = Number(t.nominal) || 0;
           expenseMap[kat] = (expenseMap[kat] || 0) + nom;
           totalExpense += nom;
+          dailyExpense[dayIdx] += nom;
+        } else if (t.jenis === 'Pemasukan') {
+          totalIncome += nom;
+          dailyIncome[dayIdx] += nom;
         }
       });
 
       const categories = Object.keys(expenseMap).sort((a, b) => expenseMap[b] - expenseMap[a]);
-      const palette = ['#14b8a6', '#06b6d4', '#f43f5e', '#f59e0b', '#8b5cf6', '#ec4899', '#3b82f6', '#64748b'];
+      const topCategory = categories[0] || null;
 
-      if (totalExpense === 0 || categories.length === 0) {
-        dom.spendingDonutChart.innerHTML = `
-          <circle cx="120" cy="120" r="85" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="30"/>
-          <text x="120" y="125" text-anchor="middle" fill="#8fa3ad" font-size="13">Belum ada pengeluaran</text>
-        `;
-        dom.spendingLegend.innerHTML = '';
-        dom.spendingInsightText.textContent = `Belum ada data pengeluaran bulan ini untuk mengevaluasi kebiasaan belanja ${state.profile}.`;
-        return;
+      if (topCategory) {
+        state.transactions.forEach(t => {
+          if (!t.tanggal || !t.tanggal.startsWith(curMonth)) return;
+          if (t.jenis === 'Pengeluaran' && t.kategori === topCategory) {
+            const nom = Number(t.nominal) || 0;
+            const dObj = new Date(t.tanggal);
+            let dayIdx = dObj.getDay() - 1;
+            if (dayIdx < 0) dayIdx = 6;
+            dailyTopCat[dayIdx] += nom;
+          }
+        });
       }
 
-      const radius = 80;
-      const circumference = 2 * Math.PI * radius;
-      let accumulatedPercent = 0;
-      let svgArcs = '';
-      let legendHtml = '';
+      // Fallback jika belum ada data transaksi bulan ini agar chart tetap artistik & responsif
+      const hasRealData = totalExpense > 0 || totalIncome > 0;
+      const displayExp = hasRealData ? dailyExpense : [25000, 48000, 32000, 65000, 95000, 52000, 78000];
+      const displayInc = hasRealData ? dailyIncome : [50000, 80000, 60000, 120000, 75000, 90000, 110000];
+      const displayTop = hasRealData ? dailyTopCat : [15000, 30000, 20000, 45000, 60000, 35000, 50000];
 
-      categories.forEach((cat, idx) => {
-        const val = expenseMap[cat];
-        const percent = val / totalExpense;
-        const strokeDasharray = `${percent * circumference} ${circumference}`;
-        const strokeDashoffset = -accumulatedPercent * circumference;
-        const color = palette[idx % palette.length];
+      // ----------------------------------------------------
+      // A. RENDER WAVE SPLINE CHART (#telemetryWaveChart)
+      // ----------------------------------------------------
+      const waveSvg = document.getElementById('telemetryWaveChart');
+      if (waveSvg) {
+        const svgW = 600;
+        const svgH = 260;
+        const padX = 55;
+        const padYTop = 30;
+        const padYBottom = 40;
+        const usableW = svgW - padX - 25;
+        const usableH = svgH - padYTop - padYBottom;
+        const bottomY = svgH - padYBottom;
 
-        svgArcs += `
-          <circle cx="120" cy="120" r="${radius}" fill="none" stroke="${color}" stroke-width="28"
-            stroke-dasharray="${strokeDasharray}" stroke-dashoffset="${strokeDashoffset}"
-            transform="rotate(-90 120 120)" style="transition: stroke-dasharray 0.5s ease;"/>
+        const allVals = [...displayExp, ...displayInc, ...displayTop];
+        const maxVal = Math.max(...allVals, 100000);
+
+        // Grid lines horizontal (5 tingkatan)
+        let gridLinesSvg = '';
+        for (let g = 0; g <= 4; g++) {
+          const y = bottomY - (g / 4) * usableH;
+          const valLabel = Math.round((maxVal * (g / 4)) / 1000) + 'k';
+          gridLinesSvg += `
+            <line x1="${padX}" y1="${y}" x2="${svgW - 20}" y2="${y}" stroke="rgba(255,255,255,0.06)" stroke-width="1" stroke-dasharray="${g === 0 ? 'none' : '3,3'}"/>
+            <text x="${padX - 10}" y="${y + 4}" fill="#64748b" font-size="10" font-weight="600" text-anchor="end">${valLabel}</text>
+          `;
+        }
+
+        // X Axis Day Labels
+        let dayLabelsSvg = '';
+        const stepX = usableW / (dayLabels.length - 1);
+        const ptsExp = [];
+        const ptsInc = [];
+        const ptsTop = [];
+
+        dayLabels.forEach((label, i) => {
+          const x = padX + i * stepX;
+          dayLabelsSvg += `
+            <text x="${x}" y="${svgH - 14}" fill="#94a3b8" font-size="11" font-weight="700" text-anchor="middle">${label}</text>
+          `;
+
+          const yExp = bottomY - (displayExp[i] / maxVal) * usableH;
+          const yInc = bottomY - (displayInc[i] / maxVal) * usableH;
+          const yTop = bottomY - (displayTop[i] / maxVal) * usableH;
+
+          ptsExp.push({ x, y: yExp });
+          ptsInc.push({ x, y: yInc });
+          ptsTop.push({ x, y: yTop });
+        });
+
+        const pathExp = getSplinePath(ptsExp);
+        const pathInc = getSplinePath(ptsInc);
+        const pathTop = getSplinePath(ptsTop);
+
+        const areaExp = `${pathExp} L ${ptsExp[ptsExp.length - 1].x},${bottomY} L ${ptsExp[0].x},${bottomY} Z`;
+        const areaInc = `${pathInc} L ${ptsInc[ptsInc.length - 1].x},${bottomY} L ${ptsInc[0].x},${bottomY} Z`;
+        const areaTop = `${pathTop} L ${ptsTop[ptsTop.length - 1].x},${bottomY} L ${ptsTop[0].x},${bottomY} Z`;
+
+        waveSvg.innerHTML = `
+          <defs>
+            <linearGradient id="gradWaveExp" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#14b8a6" stop-opacity="0.45"/>
+              <stop offset="100%" stop-color="#14b8a6" stop-opacity="0.0"/>
+            </linearGradient>
+            <linearGradient id="gradWaveInc" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.35"/>
+              <stop offset="100%" stop-color="#06b6d4" stop-opacity="0.0"/>
+            </linearGradient>
+            <linearGradient id="gradWaveTop" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#a855f7" stop-opacity="0.35"/>
+              <stop offset="100%" stop-color="#a855f7" stop-opacity="0.0"/>
+            </linearGradient>
+            <filter id="neonGlowExp" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="3" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <filter id="neonGlowInc" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="3" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <filter id="neonGlowTop" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="3" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+
+          <!-- Horizontal Grid & Day Labels -->
+          ${gridLinesSvg}
+          ${dayLabelsSvg}
+
+          <!-- Wave Area Fills -->
+          <path d="${areaTop}" fill="url(#gradWaveTop)"/>
+          <path d="${areaInc}" fill="url(#gradWaveInc)"/>
+          <path d="${areaExp}" fill="url(#gradWaveExp)"/>
+
+          <!-- Glowing Spline Lines -->
+          <path d="${pathTop}" fill="none" stroke="#c084fc" stroke-width="2.5" stroke-linecap="round" filter="url(#neonGlowTop)"/>
+          <path d="${pathInc}" fill="none" stroke="#22d3ee" stroke-width="2.5" stroke-linecap="round" filter="url(#neonGlowInc)"/>
+          <path d="${pathExp}" fill="none" stroke="#2dd4bf" stroke-width="3.2" stroke-linecap="round" filter="url(#neonGlowExp)"/>
+
+          <!-- Data Points on Expense Curve -->
+          ${ptsExp.map(p => `<circle cx="${p.x}" cy="${p.y}" r="4" fill="#081418" stroke="#2dd4bf" stroke-width="2.5"/>`).join('')}
         `;
-
-        legendHtml += `
-          <div style="display: flex; align-items: center; gap: 7px; font-size: 0.82rem; background: var(--bg-card); padding: 5px 12px; border-radius: 99px; border: 1px solid var(--border-subtle);">
-            <div style="width: 10px; height: 10px; border-radius: 50%; background: ${color};"></div>
-            <span style="color: var(--text-main); font-weight: 700;">${escapeHtml(cat)}</span>
-            <span style="color: var(--text-muted); font-size: 0.78rem;">${Math.round(percent * 100)}%</span>
-          </div>
-        `;
-
-        accumulatedPercent += percent;
-      });
-
-      dom.spendingDonutChart.innerHTML = `
-        <circle cx="120" cy="120" r="${radius}" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="28"/>
-        ${svgArcs}
-        <text x="120" y="112" text-anchor="middle" fill="#8fa3ad" font-size="11" font-weight="700" letter-spacing="0.05em">TOTAL PENGELUARAN</text>
-        <text x="120" y="134" text-anchor="middle" fill="#ffffff" font-size="15" font-weight="800">${formatIDR(totalExpense)}</text>
-      `;
-      dom.spendingLegend.innerHTML = legendHtml;
-
-      const topCategory = categories[0];
-      const topPercent = Math.round((expenseMap[topCategory] / totalExpense) * 100);
-      let insightMsg = `Pengeluaran terbesar ${state.profile} bulan ini didominasi oleh kategori <strong>${escapeHtml(topCategory)}</strong> sebesar ${formatIDR(expenseMap[topCategory])} (${topPercent}% dari total pengeluaran).`;
-
-      if (state.profile === 'Fadhil' && topCategory.toLowerCase().includes('kopi')) {
-        insightMsg += ` Perhatian: Fadhil terlihat sering jajan kopi (Kopken, ngopi, dsb). Pastikan tetap terkendali agar tidak melewati limit bulanan.`;
-      } else if (state.profile === 'Regyna' && (topCategory.toLowerCase().includes('makan') || topCategory.toLowerCase().includes('lainnya'))) {
-        insightMsg += ` Evaluasi Regyna: Pengeluaran terbesar tercatat pada ${escapeHtml(topCategory)}. Pastikan selalu mencatat detail deskripsi jajan.`;
       }
-      dom.spendingInsightText.innerHTML = insightMsg;
+
+      // ----------------------------------------------------
+      // B. RENDER 3 RADIAL RINGS (#radialRingsGrid)
+      // ----------------------------------------------------
+      const radialContainer = document.getElementById('radialRingsGrid');
+      if (radialContainer) {
+        const top3 = categories.slice(0, 3);
+        const paletteRings = [
+          { color: '#2dd4bf', glow: 'rgba(45, 212, 191, 0.4)', bg: 'rgba(45, 212, 191, 0.12)' },
+          { color: '#f43f5e', glow: 'rgba(244, 63, 94, 0.4)', bg: 'rgba(244, 63, 94, 0.12)' },
+          { color: '#a855f7', glow: 'rgba(168, 85, 247, 0.4)', bg: 'rgba(168, 85, 247, 0.12)' }
+        ];
+
+        let ringsHtml = '';
+        for (let i = 0; i < 3; i++) {
+          const cat = top3[i];
+          const pal = paletteRings[i];
+          const val = cat ? expenseMap[cat] : 0;
+          const pct = totalExpense > 0 ? Math.round((val / totalExpense) * 100) : (i === 0 ? 25 : i === 1 ? 30 : 45);
+          const name = cat || (i === 0 ? 'Makan' : i === 1 ? 'Kopi' : 'Lainnya');
+          const displayNom = cat ? formatIDR(val) : (i === 0 ? 'Rp 40.000' : i === 1 ? 'Rp 65.000' : 'Rp 80.000');
+
+          const r = 40;
+          const circ = 2 * Math.PI * r;
+          const strokeOffset = circ - (pct / 100) * circ;
+
+          ringsHtml += `
+            <div class="radial-ring-card">
+              <div class="radial-ring-svg-wrap">
+                <svg width="105" height="105" viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="${r}" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="8"/>
+                  <circle cx="50" cy="50" r="${r}" fill="none" stroke="${pal.color}" stroke-width="8"
+                    stroke-dasharray="${circ}" stroke-dashoffset="${strokeOffset}"
+                    stroke-linecap="round"
+                    transform="rotate(-90 50 50)"
+                    style="filter: drop-shadow(0 0 6px ${pal.glow}); transition: stroke-dashoffset 0.8s cubic-bezier(0.16, 1, 0.3, 1);"/>
+                  <text x="50" y="55" fill="#ffffff" font-size="16" font-weight="800" text-anchor="middle">${pct}%</text>
+                </svg>
+              </div>
+              <div class="radial-ring-value">${displayNom}</div>
+              <div class="radial-ring-label">${escapeHtml(name)}</div>
+            </div>
+          `;
+        }
+        radialContainer.innerHTML = ringsHtml;
+      }
+
+      // ----------------------------------------------------
+      // C. RENDER HORIZONTAL PROGRESS BARS (#hProgressBarsList)
+      // ----------------------------------------------------
+      const hList = document.getElementById('hProgressBarsList');
+      if (hList) {
+        const top5 = categories.slice(0, 4);
+        const barColors = ['#2dd4bf', '#f43f5e', '#a855f7', '#38bdf8'];
+        let barsHtml = '';
+
+        if (top5.length === 0) {
+          const sampleBars = [
+            { name: 'Makan Pribadi', val: 40000, pct: 25, color: '#2dd4bf' },
+            { name: 'Kopi & Jajan', val: 65000, pct: 30, color: '#f43f5e' },
+            { name: 'Belanja Online', val: 80000, pct: 45, color: '#a855f7' }
+          ];
+          sampleBars.forEach(b => {
+            barsHtml += `
+              <div class="h-progress-item">
+                <div class="h-progress-header">
+                  <span class="h-progress-name">${b.name}</span>
+                  <div style="display: flex; gap: 8px; align-items: center;">
+                    <span class="h-progress-val">${formatIDR(b.val)}</span>
+                    <span class="h-progress-pct">${b.pct}%</span>
+                  </div>
+                </div>
+                <div class="h-progress-track">
+                  <div class="h-progress-fill" style="width: ${b.pct}%; background: linear-gradient(90deg, ${b.color}, #22d3ee); box-shadow: 0 0 10px ${b.color}66;"></div>
+                </div>
+              </div>
+            `;
+          });
+        } else {
+          top5.forEach((cat, idx) => {
+            const val = expenseMap[cat];
+            const pct = totalExpense > 0 ? Math.round((val / totalExpense) * 100) : 0;
+            const color = barColors[idx % barColors.length];
+            barsHtml += `
+              <div class="h-progress-item">
+                <div class="h-progress-header">
+                  <span class="h-progress-name">${escapeHtml(cat)}</span>
+                  <div style="display: flex; gap: 8px; align-items: center;">
+                    <span class="h-progress-val">${formatIDR(val)}</span>
+                    <span class="h-progress-pct">${pct}%</span>
+                  </div>
+                </div>
+                <div class="h-progress-track">
+                  <div class="h-progress-fill" style="width: ${pct}%; background: linear-gradient(90deg, ${color}, #22d3ee); box-shadow: 0 0 10px ${color}66;"></div>
+                </div>
+              </div>
+            `;
+          });
+        }
+        hList.innerHTML = barsHtml;
+      }
+
+      // ----------------------------------------------------
+      // D. RENDER CONCENTRIC ARCS GAUGE & DONUT (#concentricArcsSvg)
+      // ----------------------------------------------------
+      const arcSvg = document.getElementById('concentricArcsSvg');
+      const arcLegend = document.getElementById('gaugeDonutLegend');
+      if (arcSvg) {
+        // Render 3 concentric glowing arc gauges (seperti kanan bawah di gambar)
+        const arcColors = ['#2dd4bf', '#f43f5e', '#a855f7'];
+        const pcts = [
+          categories[0] ? Math.round((expenseMap[categories[0]] / (totalExpense || 1)) * 100) : 25,
+          categories[1] ? Math.round((expenseMap[categories[1]] / (totalExpense || 1)) * 100) : 30,
+          categories[2] ? Math.round((expenseMap[categories[2]] / (totalExpense || 1)) * 100) : 45
+        ];
+
+        let arcPaths = '';
+        const radii = [45, 60, 75];
+        radii.forEach((rad, i) => {
+          const circ = Math.PI * rad; // half circumference for gauge
+          const fillRatio = Math.min(Math.max(pcts[i] / 100, 0.1), 1);
+          const dashOffset = circ * (1 - fillRatio);
+          arcPaths += `
+            <path d="M ${110 - rad} 130 A ${rad} ${rad} 0 0 1 ${110 + rad} 130"
+              fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="9" stroke-linecap="round"/>
+            <path d="M ${110 - rad} 130 A ${rad} ${rad} 0 0 1 ${110 + rad} 130"
+              fill="none" stroke="${arcColors[i]}" stroke-width="9" stroke-linecap="round"
+              stroke-dasharray="${circ}" stroke-dashoffset="${dashOffset}"
+              style="filter: drop-shadow(0 0 6px ${arcColors[i]}88); transition: stroke-dashoffset 0.8s ease;"/>
+          `;
+        });
+
+        arcSvg.innerHTML = `
+          ${arcPaths}
+          <text x="110" y="122" fill="#ffffff" font-size="16" font-weight="800" text-anchor="middle">${formatIDR(totalExpense)}</text>
+          <text x="110" y="142" fill="#8fa3ad" font-size="10" font-weight="700" letter-spacing="0.06em" text-anchor="middle">TOTAL BULAN INI</text>
+        `;
+
+        if (arcLegend) {
+          let legendContent = '';
+          const sampleNames = [categories[0] || 'Makan', categories[1] || 'Kopi', categories[2] || 'Lainnya'];
+          sampleNames.forEach((name, i) => {
+            legendContent += `
+              <div style="display: flex; align-items: center; gap: 6px; font-size: 0.76rem; background: rgba(14,30,36,0.6); padding: 4px 10px; border-radius: 99px; border: 1px solid rgba(255,255,255,0.08);">
+                <span style="width: 8px; height: 8px; border-radius: 50%; background: ${arcColors[i]}; box-shadow: 0 0 6px ${arcColors[i]};"></span>
+                <span style="color: #cbd5e1; font-weight: 700;">${escapeHtml(name)}</span>
+                <span style="color: #94a3b8;">${pcts[i]}%</span>
+              </div>
+            `;
+          });
+          arcLegend.innerHTML = legendContent;
+        }
+      }
+
+      // ----------------------------------------------------
+      // E. EVALUASI KEBIASAAN BELANJA INDIVIDU (#spendingInsightText)
+      // ----------------------------------------------------
+      const insightEl = document.getElementById('spendingInsightText');
+      if (insightEl) {
+        if (!hasRealData || categories.length === 0) {
+          insightEl.innerHTML = `Belum ada data transaksi tercatat bulan ini untuk mengevaluasi kebiasaan belanja <strong>${escapeHtml(state.profile)}</strong>. Data grafik di atas menampilkan simulasi telemetri antarmuka.`;
+        } else {
+          const topCat = categories[0];
+          const topNom = expenseMap[topCat];
+          const topPct = Math.round((topNom / totalExpense) * 100);
+
+          let insightMsg = `Pengeluaran terbesar <strong>${escapeHtml(state.profile)}</strong> bulan ini didominasi oleh kategori <strong>${escapeHtml(topCat)}</strong> sebesar <strong>${formatIDR(topNom)}</strong> (${topPct}% dari total pengeluaran).`;
+
+          if (state.profile === 'Fadhil') {
+            if (topCat.toLowerCase().includes('kopi') || topCat.toLowerCase().includes('ngopi')) {
+              insightMsg += `<br><span style="color: #fbbf24; font-weight: 600;">Perhatian: Fadhil terdeteksi memiliki frekuensi jajan kopi cukup intens. Pertimbangkan untuk membatasi pembelian kopi harian agar tidak membebani batas bulanan.</span>`;
+            } else {
+              insightMsg += `<br><span style="color: #2dd4bf; font-weight: 600;">Evaluasi: Pola pengeluaran Fadhil relatif stabil dan teralokasi dengan wajar.</span>`;
+            }
+          } else if (state.profile === 'Regyna') {
+            if (topCat.toLowerCase().includes('belanja') || topCat.toLowerCase().includes('olshop') || topCat.toLowerCase().includes('jastip')) {
+              insightMsg += `<br><span style="color: #f43f5e; font-weight: 600;">Perhatian: Regyna memiliki alokasi belanja online yang mendominasi. Pastikan untuk memprioritaskan kebutuhan esensial terlebih dahulu.</span>`;
+            } else {
+              insightMsg += `<br><span style="color: #2dd4bf; font-weight: 600;">Evaluasi: Pengeluaran Regyna berjalan teratur dan terkontrol dengan baik bulan ini.</span>`;
+            }
+          }
+          insightEl.innerHTML = insightMsg;
+        }
+      }
     }
 
     // Shared Notes Handlers

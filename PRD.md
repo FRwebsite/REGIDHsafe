@@ -1,5 +1,5 @@
 # PRD - REGIDHsafe
-Versi: 1.1 | Tanggal: 24 Oktober 2026 | Status: Disetujui
+Versi: 1.3 | Tanggal: 31 Oktober 2026 | Status: Disetujui
 
 ## 1. Informasi Umum
 - Nama webapp: `REGIDHsafe` [USER]
@@ -68,17 +68,26 @@ Aturan Ikon: Hindari emoticon/emoji sama sekali. Semua representasi visual wajib
 - Aksi: `Tambah`, `Edit`, `Hapus`, `Filter`, `Download`, `Simpan`, `Batal`.
 - Validasi: Nominal wajib lebih dari 0, jenis transaksi wajib dipilih, kategori wajib diisi.
 
-### Menu 2: Grafik Pribadi
-- Tujuan: Mengevaluasi kebiasaan belanja individu secara mendalam (misal: apakah Fadhil terlalu banyak jajan kopi atau Regyna terlalu banyak belanja online). [USER]
+### Menu 2: Grafik Pribadi (Dashboard Telemetri Futuristik)
+- Tujuan: Mengevaluasi kebiasaan belanja individu secara mendalam (misal: apakah Fadhil terlalu banyak jajan kopi atau Regyna terlalu banyak belanja online) dengan visualisasi grafis telemetri futuristik bertema dark tosca cyber aesthetic. [USER]
 - Aksesibilitas: Khusus profil aktif (hanya menganalisis data milik profil yang sedang login). [USER]
-- Isi halaman:
-  1. **Grafik Komposisi Pengeluaran per Kategori**:
-     - Donut Chart / Pie Chart interaktif (menggunakan SVG Chart tanpa dependency berat) yang memetakan persentase pengeluaran kategori terbesar.
-  2. **Tren Pengeluaran vs Pemasukan**:
-     - Bar chart / Line chart perbandingan arus kas harian/mingguan dalam bulan terpilih.
-  3. **Kartu Analisis Kebiasaan**:
-     - Kartu insight otomatis yang menyorot kategori pengeluaran paling dominan (mis. "Pengeluaran Terbesar Bulan Ini: Jajan Kopi" untuk Fadhil atau "Belanja Online" untuk Regyna) beserta persentase dari total pengeluaran.
-- Aksi: Filter rentang bulan/tahun, interaksi tooltip grafik.
+- Isi halaman (Sesuai Desain Referensi `media_1793441662545.png` dalam Style Web Kita):
+  1. **Multi-Series Glowing Spline Wave Chart (Area Chart)**:
+     - Dibuat dengan inline SVG dinamis dan interpolasi kurva Catmull-Rom to Cubic Bezier super mulus (`getSplinePath`).
+     - 3 kurva gelombang bercahaya (neon glow filter): Pengeluaran (Cyan-Toska `#2dd4bf`), Pemasukan (Sky Cyan `#22d3ee`), dan Kategori Terbesar (Neon Violet `#c084fc`).
+     - Gradient area transparan di bawah kurva gelombang yang memudar ke bawah.
+     - Grid garis horizontal dengan label nilai nominal (k) dan label hari Senin s/d Minggu (`Sen`, `Sel`, `Rab`, `Kam`, `Jum`, `Sab`, `Min`).
+  2. **3 Radial Percentage Rings (Circular Stroke Gauges)**:
+     - 3 dial melingkar SVG di baris tengah yang menampilkan 3 proporsi pengeluaran teratas (atau simulasi telemetri antarmuka jika baru awal bulan).
+     - Persentase numerik di tengah lingkaran, nominal rupiah di bawah dial, dan nama kategori (`Makan`, `Kopi`, `Belanja`).
+  3. **Horizontal Rounded Capsule Progress Bars**:
+     - Daftar bar kemajuan horizontal dengan label nominal di kiri, lintasan abu-abu gelap kapsul, isian gradien bercahaya, dan persentase di kanan.
+  4. **Concentric Arc Gauge (3 Lapis Busur Pelangi)**:
+     - Gauge busur melingkar konsentris 3 lapis di sisi kanan bawah dengan total nominal pengeluaran di bagian tengah busur dan legenda kategori di bawahnya.
+  5. **Kartu Evaluasi Kebiasaan Belanja Individu**:
+     - Menghitung secara cerdas pengeluaran terbesar profil aktif.
+     - Deteksi khusus: Fadhil (evaluasi frekuensi jajan kopi harian) dan Regyna (evaluasi intensitas belanja online).
+- Aksi: Navigasi tab segment grafik, animasi transisi gauge, evaluasi otomatis.
 
 ### Menu 3: Catatan Bersama
 - Tujuan: Wadah catatan bersama yang saling terhubung secara real-time antara Fadhil dan Regyna. [USER]
