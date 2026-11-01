@@ -8,6 +8,7 @@ function onOpen() {
   SpreadsheetApp.getUi().createMenu('Setup Database')
     .addItem('Buat / Perbarui Database', 'setupApp')
     .addItem('Rapikan Spreadsheet', 'rapikanSpreadsheet')
+    .addItem('Inisialisasi Data Bulan Baru (Tanggal 1)', 'initMonthlyDataManual')
     .addToUi();
 }
 
@@ -85,6 +86,8 @@ function setupApp() {
 
     removeDefaultSheets_(ss, names);
     var seedMsg = seedDefaults_(ss);
+    ensureMonthlyData_(ss);
+    setupMonthlyTrigger_();
 
     var msg = 'Database berhasil disiapkan\n\nData yang dibuat:\n' + lines.join('\n') +
               (seedMsg ? '\n\n' + seedMsg : '') +
@@ -102,6 +105,22 @@ function setupApp() {
   } catch (err) {
     Logger.log('SETUP ERROR: ' + err.message + '\n' + err.stack);
     throw new Error('Setup gagal: ' + err.message);
+  }
+}
+
+function initMonthlyDataManual() {
+  try {
+    var ss = getSpreadsheet_();
+    var res = ensureMonthlyData_(ss);
+    var msg = 'Inisialisasi data bulan baru berhasil dijalankan.\nPeriode: ' + (res && res.period ? res.period : 'Aktif') + '\n\nBy - Fadhil';
+    try {
+      SpreadsheetApp.getUi().alert('Inisialisasi Bulan Baru', msg, SpreadsheetApp.getUi().ButtonSet.OK);
+    } catch (e) {
+      ss.toast('Bulan baru siap. By - Fadhil', 'Setup Database', 6);
+    }
+    return msg;
+  } catch (err) {
+    throw new Error('Gagal inisialisasi data bulan baru: ' + err.message);
   }
 }
 
@@ -204,6 +223,7 @@ function formatSheet_(sh, cols) {
     else if (c.type === 'number') r.setNumberFormat('#,##0.##');
     else if (c.type === 'currency') r.setNumberFormat('"Rp" #,##0');
     else if (c.type === 'longtext') r.setWrap(true);
+    else if (c.type === 'text') r.setNumberFormat('@');
   });
 
   if (sh.getFilter()) {

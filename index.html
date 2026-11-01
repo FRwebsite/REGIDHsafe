@@ -3216,8 +3216,16 @@
 
     function applyPeriodChange() {
       const periodKey = getActivePeriodKey();
-      if (state.selectedMonth !== 'all' && state.monthlyLimits && state.monthlyLimits[periodKey] !== undefined) {
-        state.monthlyLimit = state.monthlyLimits[periodKey];
+      if (state.selectedMonth !== 'all') {
+        const cached = localStorage.getItem('regidh_limit_' + state.profile + '_' + periodKey) ||
+                       localStorage.getItem('regidh_limit_' + state.profile);
+        if (state.monthlyLimits && state.monthlyLimits[periodKey] !== undefined && Number(state.monthlyLimits[periodKey]) > 0) {
+          state.monthlyLimit = Number(state.monthlyLimits[periodKey]);
+        } else if (cached !== null && Number(cached) > 0) {
+          state.monthlyLimit = Number(cached);
+          if (!state.monthlyLimits) state.monthlyLimits = {};
+          state.monthlyLimits[periodKey] = state.monthlyLimit;
+        }
       }
       updatePeriodSelectorUI();
       renderLimit();
@@ -3259,15 +3267,39 @@
     // Load Data
     async function loadAllData() {
       try {
-        const data = await api('getInitialData', { profile: state.profile, period: getActivePeriodKey() });
+        const activeKey = getActivePeriodKey();
+        const cachedLimit = localStorage.getItem('regidh_limit_' + state.profile + '_' + activeKey) ||
+                            localStorage.getItem('regidh_limit_' + state.profile) ||
+                            (state.profile === 'Fadhil' ? '1500000' : '1000000');
+
+        if (cachedLimit !== null && Number(cachedLimit) > 0) {
+          state.monthlyLimit = Number(cachedLimit);
+          if (!state.monthlyLimits) state.monthlyLimits = {};
+          state.monthlyLimits[activeKey] = state.monthlyLimit;
+          renderLimit();
+          renderBalanceAndStats();
+        }
+
+        const data = await api('getInitialData', { profile: state.profile, period: activeKey });
         state.transactions = data.transactions || [];
         state.period = data.period || currentCalPeriod;
-        state.monthlyLimits = data.monthlyLimits || {};
+        state.monthlyLimits = Object.assign({}, state.monthlyLimits, data.monthlyLimits || {});
         state.availablePeriods = data.availablePeriods || [];
-        const activeKey = getActivePeriodKey();
-        state.monthlyLimit = (state.selectedMonth !== 'all' && state.monthlyLimits[activeKey] !== undefined)
-          ? state.monthlyLimits[activeKey]
-          : (data.monthlyLimit || 0);
+
+        let serverLimit = (state.selectedMonth !== 'all' && state.monthlyLimits[activeKey] !== undefined)
+          ? Number(state.monthlyLimits[activeKey])
+          : Number(data.monthlyLimit || 0);
+
+        if (serverLimit > 0) {
+          state.monthlyLimit = serverLimit;
+          state.monthlyLimits[activeKey] = serverLimit;
+          localStorage.setItem('regidh_limit_' + state.profile + '_' + activeKey, String(serverLimit));
+          localStorage.setItem('regidh_limit_' + state.profile, String(serverLimit));
+        } else if (cachedLimit && Number(cachedLimit) > 0) {
+          state.monthlyLimit = Number(cachedLimit);
+          state.monthlyLimits[activeKey] = state.monthlyLimit;
+        }
+
         state.notes = data.notes || [];
         state.tasks = data.tasks || [];
 
@@ -3327,10 +3359,22 @@
         }
       });
 
-      const limitVal = (state.monthlyLimits && state.monthlyLimits[periodKey] !== undefined)
-        ? state.monthlyLimits[periodKey]
-        : (hasMonth && periodKey === state.period ? state.monthlyLimit : 0);
+      let limitVal = 0;
+      if (state.monthlyLimits && state.monthlyLimits[periodKey] !== undefined && Number(state.monthlyLimits[periodKey]) > 0) {
+        limitVal = Number(state.monthlyLimits[periodKey]);
+      }
+      if (limitVal === 0) {
+        const cached = localStorage.getItem('regidh_limit_' + state.profile + '_' + periodKey) ||
+                       localStorage.getItem('regidh_limit_' + state.profile);
+        if (cached !== null && Number(cached) > 0) {
+          limitVal = Number(cached);
+        }
+      }
+      if (limitVal === 0 && Number(state.monthlyLimit) > 0) {
+        limitVal = Number(state.monthlyLimit);
+      }
 
+      state.monthlyLimit = limitVal;
       dom.spentThisMonth.textContent = formatIDR(spent);
       dom.limitThisMonth.textContent = formatIDR(limitVal);
 
@@ -3436,9 +3480,11 @@
     function openLimitModal() {
       const hasMonth = state.selectedMonth !== 'all';
       const periodKey = hasMonth ? `${state.selectedYear}-${state.selectedMonth}` : state.period;
-      const currentLimit = (state.monthlyLimits && state.monthlyLimits[periodKey] !== undefined)
-        ? state.monthlyLimits[periodKey]
-        : state.monthlyLimit;
+      const cached = localStorage.getItem('regidh_limit_' + state.profile + '_' + periodKey) ||
+                     localStorage.getItem('regidh_limit_' + state.profile);
+      let currentLimit = (state.monthlyLimits && state.monthlyLimits[periodKey] !== undefined && Number(state.monthlyLimits[periodKey]) > 0)
+        ? Number(state.monthlyLimits[periodKey])
+        : (cached ? Number(cached) : state.monthlyLimit);
       dom.limitInputAmount.value = currentLimit || '';
       dom.limitModal.classList.add('active');
     }
@@ -3452,16 +3498,20 @@
       const amount = Number(dom.limitInputAmount.value) || 0;
       const targetPeriod = (state.selectedMonth !== 'all') ? `${state.selectedYear}-${state.selectedMonth}` : state.period;
       try {
-        await api('setMonthlyLimit', { profile: state.profile, period: targetPeriod, limitAmount: amount });
         if (!state.monthlyLimits) state.monthlyLimits = {};
         state.monthlyLimits[targetPeriod] = amount;
-        if (targetPeriod === state.period) state.monthlyLimit = amount;
+        state.monthlyLimit = amount;
+        localStorage.setItem('regidh_limit_' + state.profile + '_' + targetPeriod, String(amount));
+        localStorage.setItem('regidh_limit_' + state.profile, String(amount));
+
         renderLimit();
         renderBalanceAndStats();
         closeLimitModal();
+
+        await api('setMonthlyLimit', { profile: state.profile, period: targetPeriod, limitAmount: amount });
         showToast('Batas bulanan disimpan');
       } catch (err) {
-        showToast('Gagal menyimpan: ' + err.message);
+        showToast('Batas bulanan disimpan (offline/lokal)');
       }
     }
 
@@ -4174,7 +4224,7 @@
             { id: 'tx_r02', tanggal: '2026-10-25', jenis: 'Pengeluaran', kategori: 'Lainnya', nominal: 33500, keterangan: 'hshs' },
             { id: 'tx_r01', tanggal: '2026-10-25', jenis: 'Pemasukan', kategori: 'Gaji/Pemasukan', nominal: 400000, keterangan: 'uang jajan' }
           ],
-          limits: { 'Fadhil_2026-10': 1500000, 'Regyna_2026-10': 1500000 },
+          limits: { 'Fadhil_2026-10': 1500000, 'Regyna_2026-10': 1000000, 'Fadhil_2026-11': 1500000, 'Regyna_2026-11': 1000000 },
           notes: [
             { id: 'n1', judul: 'Catatan Anggaran & Rencana Bersama', isi: 'Fokus tabungan untuk proyek akhir kuliah dan liburan semester.', penulis: 'Fadhil', updated_at: '2026-10-24 10:00' }
           ],
@@ -4191,9 +4241,9 @@
         const curLimitKey = prof + '_' + state.period;
         if (localDb.limits[curLimitKey] === undefined) {
           // Auto init bulan baru / tanggal 1
-          let latestKnown = 1500000;
+          let latestKnown = prof === 'Fadhil' ? 1500000 : 1000000;
           Object.keys(localDb.limits).forEach(k => {
-            if (k.startsWith(prof + '_')) latestKnown = localDb.limits[k];
+            if (k.startsWith(prof + '_') && Number(localDb.limits[k]) > 0) latestKnown = Number(localDb.limits[k]);
           });
           localDb.limits[curLimitKey] = latestKnown;
           localStorage.setItem('regidh_mock_db', JSON.stringify(localDb));

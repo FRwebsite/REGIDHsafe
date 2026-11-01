@@ -67,7 +67,7 @@ function route_(req) {
 
   switch (action) {
     case 'getInitialData':
-      return getInitialData(p.profile);
+      return getInitialData(p.profile, p.period);
     case 'saveTransaction':
       return saveTransaction(p.profile, p.txData);
     case 'deleteTransaction':
@@ -84,6 +84,8 @@ function route_(req) {
       return toggleTaskStatus(p.taskId, p.newStatus);
     case 'deleteTask':
       return deleteTask(p.taskId);
+    case 'initNewMonth':
+      return initNewMonth();
     default:
       return { ok: false, message: 'Action tidak dikenal: ' + action };
   }
@@ -97,25 +99,122 @@ function getSpreadsheet_() {
   throw new Error('Spreadsheet tidak ditemukan. Buat script dari Spreadsheet (Extensions > Apps Script) atau isi Script Property SPREADSHEET_ID.');
 }
 
-function getInitialData(profile) {
+function ensureMonthlyData_(ss) {
+  var lock = LockService.getScriptLock();
+  try {
+    lock.waitLock(15000);
+    var sheet = ss.getSheetByName(SHEET_LIMIT_);
+    if (!sheet) return { ok: false, message: 'Sheet Batas_Bulanan tidak ditemukan' };
+
+    var currentPeriod = Utilities.formatDate(new Date(), Session.getScriptTimeZone() || 'Asia/Jakarta', 'yyyy-MM');
+    var profiles = ['Fadhil', 'Regyna'];
+    var lastRow = sheet.getLastRow();
+    var existingPeriods = { 'Fadhil': {}, 'Regyna': {} };
+    var latestLimits = { 'Fadhil': 1500000, 'Regyna': 1000000 };
+
+    if (lastRow > 1) {
+      var vals = sheet.getRange(2, 1, lastRow - 1, 4).getValues();
+      for (var i = 0; i < vals.length; i++) {
+        var prof = String(vals[i][0]).trim();
+        var per = formatPeriodString_(vals[i][1]);
+        var lim = Number(vals[i][2]) || 0;
+        if (existingPeriods[prof]) {
+          existingPeriods[prof][per] = lim;
+          if (lim > 0) {
+            latestLimits[prof] = lim;
+          }
+        }
+      }
+    }
+
+    var now = new Date();
+    profiles.forEach(function (p) {
+      if (!existingPeriods[p] || !existingPeriods[p][currentPeriod]) {
+        var carriedLimit = latestLimits[p] || (p === 'Fadhil' ? 1500000 : 1000000);
+        sheet.appendRow([p, "'" + currentPeriod, carriedLimit, now]);
+        if (!existingPeriods[p]) existingPeriods[p] = {};
+        existingPeriods[p][currentPeriod] = carriedLimit;
+      }
+    });
+
+    return { ok: true, period: currentPeriod };
+  } catch (err) {
+    Logger.log('ensureMonthlyData_ error: ' + err.message);
+    return { ok: false, message: err.message };
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+function initNewMonth() {
+  try {
+    var ss = getSpreadsheet_();
+    var res = ensureMonthlyData_(ss);
+    return { ok: true, data: res };
+  } catch (err) {
+    return { ok: false, message: err.message };
+  }
+}
+
+function triggerMonthlyDataCheck() {
+  try {
+    var ss = getSpreadsheet_();
+    ensureMonthlyData_(ss);
+  } catch (err) {
+    Logger.log('triggerMonthlyDataCheck error: ' + err.message);
+  }
+}
+
+function setupMonthlyTrigger_() {
+  try {
+    var triggers = ScriptApp.getProjectTriggers();
+    var exists = false;
+    for (var i = 0; i < triggers.length; i++) {
+      if (triggers[i].getHandlerFunction() === 'triggerMonthlyDataCheck') {
+        exists = true;
+        break;
+      }
+    }
+    if (!exists) {
+      ScriptApp.newTrigger('triggerMonthlyDataCheck')
+        .timeBased()
+        .onMonthDay(1)
+        .atHour(0)
+        .create();
+    }
+  } catch (e) {
+    Logger.log('setupMonthlyTrigger_ notice: ' + e.message);
+  }
+}
+
+function getInitialData(profile, reqPeriod) {
   try {
     if (!profile || (profile !== 'Fadhil' && profile !== 'Regyna')) {
       return { ok: false, message: 'Profil tidak valid' };
     }
 
     var ss = getSpreadsheet_();
+    
+    // Auto check dan pastikan baris data bulan berjalan (tanggal 1) terinisialisasi
+    ensureMonthlyData_(ss);
+
     var sheetName = (profile === 'Fadhil') ? SHEET_FADHIL_ : SHEET_REGYNA_;
     var txSheet = ss.getSheetByName(sheetName);
     var transactions = [];
+    var periodsSet = {};
 
     if (txSheet && txSheet.getLastRow() > 1) {
       var txValues = txSheet.getRange(2, 1, txSheet.getLastRow() - 1, 7).getValues();
       for (var i = txValues.length - 1; i >= 0; i--) {
         var row = txValues[i];
         if (row[0]) {
+          var tglIso = formatDateISO_(row[1]);
+          if (tglIso && tglIso.length >= 7) {
+            periodsSet[tglIso.substring(0, 7)] = true;
+          }
           transactions.push({
             id: String(row[0]),
-            tanggal: formatDateISO_(row[1]),
+            tanggal: tglIso,
             jenis: String(row[2]),
             kategori: String(row[3]),
             nominal: Number(row[4]) || 0,
@@ -127,17 +226,34 @@ function getInitialData(profile) {
     }
 
     var currentPeriod = Utilities.formatDate(new Date(), Session.getScriptTimeZone() || 'Asia/Jakarta', 'yyyy-MM');
+    periodsSet[currentPeriod] = true;
+
     var limitSheet = ss.getSheetByName(SHEET_LIMIT_);
-    var monthlyLimit = 0;
+    var monthlyLimits = {};
+    var lastKnownLimit = (profile === 'Fadhil') ? 1500000 : 1000000;
+
     if (limitSheet && limitSheet.getLastRow() > 1) {
       var limitVals = limitSheet.getRange(2, 1, limitSheet.getLastRow() - 1, 4).getValues();
       for (var j = 0; j < limitVals.length; j++) {
-        if (String(limitVals[j][0]) === profile && String(limitVals[j][1]) === currentPeriod) {
-          monthlyLimit = Number(limitVals[j][2]) || 0;
-          break;
+        if (String(limitVals[j][0]).trim() === profile) {
+          var pPeriod = formatPeriodString_(limitVals[j][1]);
+          var pLim = Number(limitVals[j][2]) || 0;
+          if (pPeriod) {
+            monthlyLimits[pPeriod] = pLim;
+            periodsSet[pPeriod] = true;
+            if (pLim > 0) lastKnownLimit = pLim;
+          }
         }
       }
     }
+
+    var normReqPeriod = reqPeriod ? formatPeriodString_(reqPeriod) : '';
+    var activePeriod = normReqPeriod || currentPeriod;
+    var monthlyLimit = (monthlyLimits[activePeriod] !== undefined)
+      ? monthlyLimits[activePeriod]
+      : (monthlyLimits[currentPeriod] || lastKnownLimit || 0);
+
+    var availablePeriods = Object.keys(periodsSet).sort().reverse();
 
     var notesSheet = ss.getSheetByName(SHEET_NOTES_);
     var notes = [];
@@ -183,8 +299,11 @@ function getInitialData(profile) {
       data: {
         profile: profile,
         period: currentPeriod,
-        transactions: transactions,
+        activePeriod: activePeriod,
         monthlyLimit: monthlyLimit,
+        monthlyLimits: monthlyLimits,
+        availablePeriods: availablePeriods,
+        transactions: transactions,
         notes: notes,
         tasks: tasks
       }
@@ -286,6 +405,7 @@ function setMonthlyLimit(profile, period, limitAmount) {
     var sheet = ss.getSheetByName(SHEET_LIMIT_);
     if (!sheet) throw new Error('Sheet ' + SHEET_LIMIT_ + ' tidak ditemukan.');
 
+    var normPeriod = formatPeriodString_(period);
     var amount = Math.abs(Number(limitAmount)) || 0;
     var now = new Date();
     var lastRow = sheet.getLastRow();
@@ -294,8 +414,10 @@ function setMonthlyLimit(profile, period, limitAmount) {
     if (lastRow > 1) {
       var rows = sheet.getRange(2, 1, lastRow - 1, 2).getValues();
       for (var i = 0; i < rows.length; i++) {
-        if (String(rows[i][0]) === profile && String(rows[i][1]) === String(period)) {
-          sheet.getRange(i + 2, 3, 1, 2).setValues([[amount, now]]);
+        var rowProf = String(rows[i][0]).trim();
+        var rowPer = formatPeriodString_(rows[i][1]);
+        if (rowProf === profile && rowPer === normPeriod) {
+          sheet.getRange(i + 2, 2, 1, 3).setValues([["'" + normPeriod, amount, now]]);
           updated = true;
           break;
         }
@@ -303,10 +425,10 @@ function setMonthlyLimit(profile, period, limitAmount) {
     }
 
     if (!updated) {
-      sheet.appendRow([profile, period, amount, now]);
+      sheet.appendRow([profile, "'" + normPeriod, amount, now]);
     }
 
-    return { ok: true, data: { profile: profile, period: period, limit: amount } };
+    return { ok: true, data: { profile: profile, period: normPeriod, limit: amount } };
   } catch (err) {
     return { ok: false, message: 'Gagal mengatur limit: ' + err.message };
   } finally {
@@ -490,6 +612,26 @@ function deleteTask(taskId) {
   } finally {
     lock.releaseLock();
   }
+}
+
+function formatPeriodString_(val) {
+  if (!val) return '';
+  if (val instanceof Date) {
+    return Utilities.formatDate(val, Session.getScriptTimeZone() || 'Asia/Jakarta', 'yyyy-MM');
+  }
+  var s = String(val).trim();
+  if (s.indexOf("'") === 0) s = s.substring(1);
+  if (s.length >= 7) {
+    var m = s.match(/^(\d{4})[-/.](\d{1,2})/);
+    if (m) {
+      return m[1] + '-' + (m[2].length === 1 ? '0' + m[2] : m[2]);
+    }
+    var dt = new Date(s);
+    if (!isNaN(dt.getTime())) {
+      return Utilities.formatDate(dt, Session.getScriptTimeZone() || 'Asia/Jakarta', 'yyyy-MM');
+    }
+  }
+  return s;
 }
 
 function formatDateISO_(d) {
