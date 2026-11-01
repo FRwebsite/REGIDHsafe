@@ -557,6 +557,124 @@
       margin-bottom: 16px;
     }
 
+    /* Period Selector (Bulan & Tahun) */
+    .period-filter-wrap {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      margin-bottom: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .period-filter-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .period-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--primary-glow);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .period-nav-btns {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-period-nav {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    .btn-period-nav:hover {
+      border-color: var(--primary-glow);
+      color: var(--primary-glow);
+      background: var(--bg-card-hover);
+    }
+
+    .btn-period-reset {
+      background: rgba(20, 184, 166, 0.14);
+      border: 1px solid var(--border-subtle);
+      color: var(--primary-glow);
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 0 10px;
+      height: 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    .btn-period-reset:hover {
+      background: var(--primary-dark);
+      color: #ffffff;
+    }
+
+    .period-select-row {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 8px;
+    }
+
+    .period-select-field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .period-select-field label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .period-select-field .form-select {
+      padding: 8px 12px;
+      font-size: 0.88rem;
+      height: 40px;
+      cursor: pointer;
+    }
+
+    .period-summary-pill {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      background: rgba(12, 24, 28, 0.6);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      padding: 6px 10px;
+      line-height: 1.4;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .period-summary-pill strong {
+      color: var(--text-main);
+    }
+
     /* Nominal Chips */
     .nominal-chips-wrap {
       display: flex;
@@ -2110,6 +2228,54 @@
               </div>
             </div>
 
+            <!-- Period Selector (Pilih Bulan & Tahun) -->
+            <div class="period-filter-wrap">
+              <div class="period-filter-header">
+                <div class="period-label">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  <span>Pilih Periode</span>
+                </div>
+                <div class="period-nav-btns">
+                  <button type="button" class="btn-period-nav" onclick="navigatePeriodStep(-1)" title="Bulan Sebelumnya">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+                  </button>
+                  <button type="button" class="btn-period-reset" onclick="resetToCurrentMonth()" title="Bulan Ini">Bulan Ini</button>
+                  <button type="button" class="btn-period-nav" onclick="navigatePeriodStep(1)" title="Bulan Berikutnya">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                  </button>
+                </div>
+              </div>
+              <div class="period-select-row">
+                <div class="period-select-field">
+                  <label for="periodMonthSelect">Bulan</label>
+                  <select id="periodMonthSelect" class="form-input form-select" onchange="onPeriodDropdownChange()">
+                    <option value="all">Semua Bulan</option>
+                    <option value="01">Januari</option>
+                    <option value="02">Februari</option>
+                    <option value="03">Maret</option>
+                    <option value="04">April</option>
+                    <option value="05">Mei</option>
+                    <option value="06">Juni</option>
+                    <option value="07">Juli</option>
+                    <option value="08">Agustus</option>
+                    <option value="09">September</option>
+                    <option value="10">Oktober</option>
+                    <option value="11">November</option>
+                    <option value="12">Desember</option>
+                  </select>
+                </div>
+                <div class="period-select-field">
+                  <label for="periodYearSelect">Tahun</label>
+                  <select id="periodYearSelect" class="form-input form-select" onchange="onPeriodDropdownChange()">
+                    <!-- Populated dynamically -->
+                  </select>
+                </div>
+              </div>
+              <div id="periodSummaryBadge" class="period-summary-pill">
+                Memuat periode...
+              </div>
+            </div>
+
             <!-- Filter Segments -->
             <div class="filter-segment-wrap">
               <button class="filter-btn active" onclick="setTxFilter('Semua')">Semua</button>
@@ -2149,7 +2315,7 @@
                 Analisis telemetri arus kas & tren pengeluaran <strong id="grafikOwnerTitle" style="color: var(--primary-glow);">Fadhil</strong>
               </div>
             </div>
-            <div style="font-size: 0.82rem; font-weight: 700; background: rgba(20, 184, 166, 0.15); border: 1px solid var(--border-active); color: var(--primary-glow); padding: 5px 12px; border-radius: 99px;">
+            <div id="grafikPeriodBadge" style="font-size: 0.82rem; font-weight: 700; background: rgba(20, 184, 166, 0.15); border: 1px solid var(--border-active); color: var(--primary-glow); padding: 5px 12px; border-radius: 99px;">
               Bulan Ini
             </div>
           </div>
@@ -2560,13 +2726,28 @@
       }
     }
 
-    // State Store with 26 Verified Historical Manual Transactions
+    const initDate = new Date();
+    const currentCalYear = String(initDate.getFullYear());
+    const currentCalMonth = String(initDate.getMonth() + 1).padStart(2, '0');
+    const currentCalPeriod = `${currentCalYear}-${currentCalMonth}`;
+
+    const monthNamesIndo = {
+      '01': 'Januari', '02': 'Februari', '03': 'Maret', '04': 'April',
+      '05': 'Mei', '06': 'Juni', '07': 'Juli', '08': 'Agustus',
+      '09': 'September', '10': 'Oktober', '11': 'November', '12': 'Desember'
+    };
+
+    // State Store with Verified Historical Manual Transactions
     const state = {
       profile: localStorage.getItem('regidh_profile') || 'Fadhil',
       isBalanceHidden: localStorage.getItem('regidh_hide_bal') === 'true',
-      period: '2026-10',
-      transactions: [],
+      period: currentCalPeriod,
+      selectedMonth: currentCalMonth,
+      selectedYear: currentCalYear,
       monthlyLimit: 0,
+      monthlyLimits: {},
+      availablePeriods: [],
+      transactions: [],
       notes: [],
       tasks: [],
       currentFilter: 'Semua',
@@ -2627,7 +2808,10 @@
       grafikOwnerTitle: document.getElementById('grafikOwnerTitle'),
       spendingDonutChart: document.getElementById('spendingDonutChart'),
       spendingLegend: document.getElementById('spendingLegend'),
-      spendingInsightText: document.getElementById('spendingInsightText')
+      spendingInsightText: document.getElementById('spendingInsightText'),
+      periodMonthSelect: document.getElementById('periodMonthSelect'),
+      periodYearSelect: document.getElementById('periodYearSelect'),
+      periodSummaryBadge: document.getElementById('periodSummaryBadge')
     };
 
     // Initialize
@@ -2976,14 +3160,119 @@
       });
     }
 
+    // Period Helper Functions
+    function getActivePeriodKey() {
+      if (state.selectedMonth === 'all') {
+        return state.selectedYear;
+      }
+      return `${state.selectedYear}-${state.selectedMonth}`;
+    }
+
+    function syncYearOptions() {
+      const yearSet = new Set();
+      yearSet.add(currentCalYear);
+      state.transactions.forEach(t => {
+        if (t.tanggal && t.tanggal.length >= 4) {
+          yearSet.add(t.tanggal.substring(0, 4));
+        }
+      });
+      if (Array.isArray(state.availablePeriods)) {
+        state.availablePeriods.forEach(p => {
+          if (p && p.length >= 4) yearSet.add(p.substring(0, 4));
+        });
+      }
+      const sortedYears = Array.from(yearSet).sort().reverse();
+      if (dom.periodYearSelect) {
+        dom.periodYearSelect.innerHTML = sortedYears.map(y => `<option value="${y}" ${y === state.selectedYear ? 'selected' : ''}>${y}</option>`).join('');
+      }
+    }
+
+    function updatePeriodSelectorUI() {
+      if (dom.periodMonthSelect) dom.periodMonthSelect.value = state.selectedMonth;
+      if (dom.periodYearSelect) dom.periodYearSelect.value = state.selectedYear;
+
+      const filtered = getFilteredTransactions();
+      let inc = 0;
+      let exp = 0;
+      filtered.forEach(t => {
+        if (t.jenis === 'Pemasukan') inc += Number(t.nominal);
+        else exp += Number(t.nominal);
+      });
+
+      const labelMonth = state.selectedMonth === 'all' ? 'Semua Bulan' : (monthNamesIndo[state.selectedMonth] || state.selectedMonth);
+      if (dom.periodSummaryBadge) {
+        dom.periodSummaryBadge.innerHTML = `
+          <span><strong>${labelMonth} ${state.selectedYear}</strong> • ${filtered.length} Transaksi</span>
+          <span>Masuk: <strong style="color:var(--success)">${formatIDR(inc)}</strong> | Keluar: <strong style="color:var(--danger)">${formatIDR(exp)}</strong></span>
+        `;
+      }
+    }
+
+    function onPeriodDropdownChange() {
+      if (dom.periodMonthSelect) state.selectedMonth = dom.periodMonthSelect.value;
+      if (dom.periodYearSelect) state.selectedYear = dom.periodYearSelect.value;
+      applyPeriodChange();
+    }
+
+    function applyPeriodChange() {
+      const periodKey = getActivePeriodKey();
+      if (state.selectedMonth !== 'all' && state.monthlyLimits && state.monthlyLimits[periodKey] !== undefined) {
+        state.monthlyLimit = state.monthlyLimits[periodKey];
+      }
+      updatePeriodSelectorUI();
+      renderLimit();
+      renderTransactions();
+    }
+
+    function navigatePeriodStep(delta) {
+      if (state.selectedMonth === 'all') {
+        let yr = parseInt(state.selectedYear, 10) + delta;
+        state.selectedYear = String(yr);
+      } else {
+        let m = parseInt(state.selectedMonth, 10) + delta;
+        let yr = parseInt(state.selectedYear, 10);
+        if (m < 1) {
+          m = 12;
+          yr -= 1;
+        } else if (m > 12) {
+          m = 1;
+          yr += 1;
+        }
+        state.selectedMonth = String(m).padStart(2, '0');
+        state.selectedYear = String(yr);
+      }
+      syncYearOptions();
+      if (dom.periodMonthSelect) dom.periodMonthSelect.value = state.selectedMonth;
+      if (dom.periodYearSelect) dom.periodYearSelect.value = state.selectedYear;
+      applyPeriodChange();
+    }
+
+    function resetToCurrentMonth() {
+      state.selectedMonth = currentCalMonth;
+      state.selectedYear = currentCalYear;
+      syncYearOptions();
+      if (dom.periodMonthSelect) dom.periodMonthSelect.value = state.selectedMonth;
+      if (dom.periodYearSelect) dom.periodYearSelect.value = state.selectedYear;
+      applyPeriodChange();
+    }
+
     // Load Data
     async function loadAllData() {
       try {
-        const data = await api('getInitialData', { profile: state.profile });
+        const data = await api('getInitialData', { profile: state.profile, period: getActivePeriodKey() });
         state.transactions = data.transactions || [];
-        state.monthlyLimit = data.monthlyLimit || 0;
+        state.period = data.period || currentCalPeriod;
+        state.monthlyLimits = data.monthlyLimits || {};
+        state.availablePeriods = data.availablePeriods || [];
+        const activeKey = getActivePeriodKey();
+        state.monthlyLimit = (state.selectedMonth !== 'all' && state.monthlyLimits[activeKey] !== undefined)
+          ? state.monthlyLimits[activeKey]
+          : (data.monthlyLimit || 0);
         state.notes = data.notes || [];
         state.tasks = data.tasks || [];
+
+        syncYearOptions();
+        updatePeriodSelectorUI();
         renderAll();
       } catch (err) {
         showToast('Gagal memuat data: ' + err.message);
@@ -3029,20 +3318,25 @@
 
     // Render Monthly Limit Progress
     function renderLimit() {
-      const curMonth = state.period;
+      const hasMonth = state.selectedMonth !== 'all';
+      const periodKey = hasMonth ? `${state.selectedYear}-${state.selectedMonth}` : state.period;
       let spent = 0;
       state.transactions.forEach(t => {
-        if (t.jenis === 'Pengeluaran' && t.tanggal && t.tanggal.startsWith(curMonth)) {
+        if (t.jenis === 'Pengeluaran' && t.tanggal && t.tanggal.startsWith(periodKey)) {
           spent += Number(t.nominal);
         }
       });
 
+      const limitVal = (state.monthlyLimits && state.monthlyLimits[periodKey] !== undefined)
+        ? state.monthlyLimits[periodKey]
+        : (hasMonth && periodKey === state.period ? state.monthlyLimit : 0);
+
       dom.spentThisMonth.textContent = formatIDR(spent);
-      dom.limitThisMonth.textContent = formatIDR(state.monthlyLimit);
+      dom.limitThisMonth.textContent = formatIDR(limitVal);
 
       let percent = 0;
-      if (state.monthlyLimit > 0) {
-        percent = Math.round((spent / state.monthlyLimit) * 100);
+      if (limitVal > 0) {
+        percent = Math.round((spent / limitVal) * 100);
       }
       dom.limitPercentText.textContent = percent + '%';
       dom.limitProgressFill.style.width = Math.min(percent, 100) + '%';
@@ -3066,8 +3360,18 @@
       renderTransactions();
     }
 
-    function renderTransactions() {
-      let filtered = state.transactions.filter(t => {
+    function getFilteredTransactions() {
+      const hasMonth = state.selectedMonth !== 'all';
+      const targetPeriod = hasMonth ? `${state.selectedYear}-${state.selectedMonth}` : state.selectedYear;
+
+      return state.transactions.filter(t => {
+        if (t.tanggal) {
+          if (hasMonth) {
+            if (!t.tanggal.startsWith(targetPeriod)) return false;
+          } else {
+            if (!t.tanggal.startsWith(state.selectedYear)) return false;
+          }
+        }
         if (state.currentFilter !== 'Semua' && t.jenis !== state.currentFilter) return false;
         if (state.searchQuery) {
           const matchKat = (t.kategori || '').toLowerCase().includes(state.searchQuery);
@@ -3077,9 +3381,14 @@
         }
         return true;
       });
+    }
+
+    function renderTransactions() {
+      const filtered = getFilteredTransactions();
+      updatePeriodSelectorUI();
 
       if (filtered.length === 0) {
-        dom.txListContainer.innerHTML = `<div class="empty-state">Tidak ada transaksi ditemukan.</div>`;
+        dom.txListContainer.innerHTML = `<div class="empty-state">Tidak ada transaksi ditemukan untuk periode ini.</div>`;
         return;
       }
 
@@ -3125,7 +3434,12 @@
 
     // Limit Modal Handlers
     function openLimitModal() {
-      dom.limitInputAmount.value = state.monthlyLimit || '';
+      const hasMonth = state.selectedMonth !== 'all';
+      const periodKey = hasMonth ? `${state.selectedYear}-${state.selectedMonth}` : state.period;
+      const currentLimit = (state.monthlyLimits && state.monthlyLimits[periodKey] !== undefined)
+        ? state.monthlyLimits[periodKey]
+        : state.monthlyLimit;
+      dom.limitInputAmount.value = currentLimit || '';
       dom.limitModal.classList.add('active');
     }
 
@@ -3136,9 +3450,12 @@
     async function handleLimitSubmit(e) {
       e.preventDefault();
       const amount = Number(dom.limitInputAmount.value) || 0;
+      const targetPeriod = (state.selectedMonth !== 'all') ? `${state.selectedYear}-${state.selectedMonth}` : state.period;
       try {
-        await api('setMonthlyLimit', { profile: state.profile, period: state.period, limitAmount: amount });
-        state.monthlyLimit = amount;
+        await api('setMonthlyLimit', { profile: state.profile, period: targetPeriod, limitAmount: amount });
+        if (!state.monthlyLimits) state.monthlyLimits = {};
+        state.monthlyLimits[targetPeriod] = amount;
+        if (targetPeriod === state.period) state.monthlyLimit = amount;
         renderLimit();
         renderBalanceAndStats();
         closeLimitModal();
@@ -3150,12 +3467,14 @@
 
     // Monthly Recap CSV Download
     function downloadMonthlyRecap() {
-      const curMonth = state.period;
-      const monthTx = state.transactions.filter(t => t.tanggal && t.tanggal.startsWith(curMonth));
+      const hasMonth = state.selectedMonth !== 'all';
+      const targetPeriod = hasMonth ? `${state.selectedYear}-${state.selectedMonth}` : state.selectedYear;
+      const labelPeriod = hasMonth ? `${monthNamesIndo[state.selectedMonth] || state.selectedMonth} ${state.selectedYear}` : `Tahun ${state.selectedYear}`;
+      const monthTx = state.transactions.filter(t => t.tanggal && t.tanggal.startsWith(targetPeriod));
       
       let totalIncome = 0;
       let totalExpense = 0;
-      let csvContent = `Data Rekap Bulanan - REGIDHsafe\nProfil: ${state.profile}\nPeriode: ${curMonth}\n\n`;
+      let csvContent = `Data Rekap Bulanan - REGIDHsafe\nProfil: ${state.profile}\nPeriode: ${labelPeriod} (${targetPeriod})\n\n`;
       csvContent += `Tanggal,Jenis,Kategori,Nominal,Keterangan\n`;
 
       monthTx.forEach(t => {
@@ -3164,17 +3483,21 @@
         csvContent += `"${t.tanggal}","${t.jenis}","${t.kategori.replace(/"/g, '""')}","${t.nominal}","${(t.keterangan || '').replace(/"/g, '""')}"\n`;
       });
 
+      const periodLimit = (state.monthlyLimits && state.monthlyLimits[targetPeriod] !== undefined)
+        ? state.monthlyLimits[targetPeriod]
+        : (targetPeriod === state.period ? state.monthlyLimit : 0);
+
       csvContent += `\nRingkasan:\n`;
       csvContent += `Total Pemasukan,${totalIncome}\n`;
       csvContent += `Total Pengeluaran,${totalExpense}\n`;
       csvContent += `Sisa Saldo,${totalIncome - totalExpense}\n`;
-      csvContent += `Batas Bulanan,${state.monthlyLimit}\n`;
+      csvContent += `Batas Bulanan,${periodLimit}\n`;
 
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.setAttribute('href', url);
-      link.setAttribute('download', `Rekap_${state.profile}_${curMonth}.csv`);
+      link.setAttribute('download', `Rekap_${state.profile}_${targetPeriod}.csv`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -3202,9 +3525,13 @@
 
     // Render Dashboard Grafik Telemetri Futuristik (Spline Wave, 3 Radial Rings, Bars, Concentric Gauge)
     function renderGrafikPribadi() {
-      const curMonth = state.period;
+      const hasMonth = state.selectedMonth !== 'all';
+      const curMonth = hasMonth ? `${state.selectedYear}-${state.selectedMonth}` : state.period;
+      const labelPeriod = hasMonth ? `${monthNamesIndo[state.selectedMonth] || state.selectedMonth} ${state.selectedYear}` : `Tahun ${state.selectedYear}`;
       const ownerEl = document.getElementById('grafikOwnerTitle');
       if (ownerEl) ownerEl.textContent = state.profile;
+      const badgeEl = document.getElementById('grafikPeriodBadge');
+      if (badgeEl) badgeEl.textContent = labelPeriod;
 
       // 1. Agregasi Transaksi
       const expenseMap = {};
@@ -3861,14 +4188,44 @@
       if (action === 'getInitialData') {
         const prof = (payload && payload.profile) || 'Fadhil';
         const txs = prof === 'Fadhil' ? localDb.tx_fadhil : localDb.tx_regyna;
-        const limitKey = prof + '_' + state.period;
+        const curLimitKey = prof + '_' + state.period;
+        if (localDb.limits[curLimitKey] === undefined) {
+          // Auto init bulan baru / tanggal 1
+          let latestKnown = 1500000;
+          Object.keys(localDb.limits).forEach(k => {
+            if (k.startsWith(prof + '_')) latestKnown = localDb.limits[k];
+          });
+          localDb.limits[curLimitKey] = latestKnown;
+          localStorage.setItem('regidh_mock_db', JSON.stringify(localDb));
+        }
+
+        const monthlyLimits = {};
+        const periodsSet = {};
+        periodsSet[state.period] = true;
+        txs.forEach(t => {
+          if (t.tanggal && t.tanggal.length >= 7) periodsSet[t.tanggal.substring(0, 7)] = true;
+        });
+        Object.keys(localDb.limits).forEach(k => {
+          if (k.startsWith(prof + '_')) {
+            const per = k.replace(prof + '_', '');
+            monthlyLimits[per] = localDb.limits[k];
+            periodsSet[per] = true;
+          }
+        });
+
+        const activeKey = (payload && payload.period) || state.period;
+        const mLimit = (monthlyLimits[activeKey] !== undefined) ? monthlyLimits[activeKey] : (localDb.limits[curLimitKey] || 0);
+
         return {
           ok: true,
           data: {
             profile: prof,
             period: state.period,
+            activePeriod: activeKey,
             transactions: txs,
-            monthlyLimit: localDb.limits[limitKey] || 0,
+            monthlyLimit: mLimit,
+            monthlyLimits: monthlyLimits,
+            availablePeriods: Object.keys(periodsSet).sort().reverse(),
             notes: localDb.notes,
             tasks: localDb.tasks
           }
